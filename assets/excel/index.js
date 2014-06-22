@@ -4,12 +4,14 @@ define(function (require) {
 
     var $head = $('head')
 
-    function Excel(selector, config) {
+    function Excel(selector) {
 
         var id = Math.random().toString().substring(2) + Date.now()
-        $('<style style="text/css" id="style-' + id + '"></style>').appendTo($head)
+        this.styleNodeId = 'style' + id
 
-        console.log(config)
+        $('<style style="text/css" id="' + this.styleNodeId + '"></style>').appendTo($head)
+
+        this.$styleNode = $('#' + this.styleNodeId)
 
         var fieldsStr = ''
         for (var i = 65; i <= 90; i++) {
@@ -24,7 +26,7 @@ define(function (require) {
 
         //创建字段
 
-        $('<div id="' + id + '">' +
+        $('<div id="excel-' + id + '">' +
             '<div class="excel-wrapper">' +
             '<div class="excel-content">' +
             '<div class="fields">' + fieldsStr + '</div>' +
@@ -33,13 +35,13 @@ define(function (require) {
             '</div>' +
             '</div>').appendTo($(selector))
 
-        var $node = $('#' + id)
+        this.nodeId = '#excel-' + id
+        var $node = $(this.nodeId)
         var $wrapper = $node.find('div.excel-wrapper')
         var $fields = $node.find('>div.excel-wrapper>div.excel-content>div.fields')
         var $rows = $node.find('>div.excel-wrapper>div.excel-content>div.rows')
 
-
-        $wrapper.on('scroll', function (ev) {
+        $wrapper.on('scroll', function () {
             var $this = $(this)
             var left = $this.scrollTop()
             var top = $this.scrollLeft()
@@ -47,18 +49,40 @@ define(function (require) {
             $rows.css('left', $this.scrollLeft()).toggleClass('overflow', left > 10)
         })
 
+        //存放几个关键元素的引用
+        this.$content = $wrapper.find('>div.excel-content')
+        this.fieldsNode = $fields[0].getElementsByTagName('span')
+        this.rowsNode = $rows[0].getElementsByTagName('div')
     }
 
     /*
-     * 重置列宽
+     * 重置网格线
      * */
-    Excel.prototype.resetColumnsPosition = function () {
+    Excel.prototype.resetGridPosition = function () {
+
+        var cssText = []
+
+        for (var i = 0; i < this.fieldsNode.length; i++) {
+            cssText.push('url(field.png) ' + this.fieldsNode[i].offsetLeft + 'px 0 repeat-y')
+        }
+
+        for (var j = 0; j < this.rowsNode.length; j++) {
+            cssText.push('url(rows.png) 0 ' + this.rowsNode[j].offsetTop + 'px repeat-x')
+        }
+
+        this.$content.css({
+            width: this.fieldsNode[this.fieldsNode.length - 1].offsetLeft + this.fieldsNode[this.fieldsNode.length - 1].offsetWidth,
+            height: this.rowsNode[this.rowsNode.length - 1].offsetTop + this.rowsNode[this.rowsNode.length - 1].offsetHeight
+        })
+
+        this.$styleNode.html(this.nodeId + ' .excel-content{background:' + cssText.join(',') + ';' + '}')
+        console.log(this.nodeId + ' .excel-content{' + cssText.join(',') + ';' + '}')
 
     }
 
-    Excel.prototype.resetRowsPosition = function () {
-
-    }
+//    Excel.prototype.resetRowsPosition = function () {
+//
+//    }
 
     /*
      * 增加一行
@@ -79,6 +103,9 @@ define(function (require) {
 //    }
 
 
-    new Excel('#data-container', {})
+    var excel = new Excel('#data-container')
+    setInterval(function () {
+        excel.resetGridPosition()
+    }, 1000)
 
 })
