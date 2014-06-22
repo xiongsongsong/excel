@@ -1,24 +1,65 @@
-body
-  color red
+h1, h2, h3, p
+  margin 0 auto
+  padding 0
 
-.table-wrapper
-  border 1px red solid
-  padding-left 40px
-  padding-top 40px
+body
+  font-size 12px
+
+.excel-wrapper
+  border 1px #888 solid
+  border-radius 3px
+  padding-left 35px
+  padding-top 25px
   height 500px
   position relative
+  margin 5em
+  overflow auto
+  .excel-container
+    width 100%
+    height 100%
+    overflow auto
+  .excel-content
+    width 200%
+    height 200%
+    background url(field.png) 0 0 repeat-y, url(field.png) 100px 0 repeat-y, url(field.png) 200px 0 repeat-y, url(field.png) 300px 0 repeat-y, url(rows.png) 0 0 repeat-x, url(rows.png) 0 25px repeat-x, url(rows.png) 0 50px repeat-x, url(rows.png) 0 75px repeat-x, url(rows.png) 0 100px repeat-x, url(rows.png) 0 125px repeat-x, url(rows.png) 0 150px repeat-x, url(rows.png) 0 175px repeat-x, url(rows.png) 0 200px repeat-x
   .fields
     position absolute
-    width 100%
-    height 100%
-    left 0
+    left 35px
     top 0
-    background url(field.png) 100px 0 repeat-y, url(field.png) 200px 0 repeat-y, url(field.png) 300px 0 repeat-y
+    background #ccc
+    height 25px
+    white-space nowrap
+    z-index 2
+    -webkit-transition box-shadow .2s ease-in-out;
+    span
+      width 100px
+      display inline-block
+      height 100%
+      text-align center
+      line-height 220%
+      background url(field.png) 0 0 repeat-y
+  .fields.overflow
+    box-shadow 0 0 10px rgba(0, 0, 0, .2)
+
   .rows
+    background #ccc
+    width 35px
     position absolute
     left 0
-    top 0
-    width 100%
-    height 100%
-    background url(rows.png) 0 100px repeat-x, url(rows.png) 0 200px repeat-x, url(rows.png) 0 300px repeat-x, url(rows.png) 0 400px repeat-x
+    top 25px
+    -webkit-transition box-shadow .2s ease-in-out;
+    div
+      display box
+      box-orient horizontal
+      box-pack center
+      box-align center
+      height 25px
+      font-size 12px
+      display -webkit-box
+      -webkit-box-orient horizontal
+      -webkit-box-pack center
+      -webkit-box-align center
+      background url(rows.png) 0 0 repeat-x
+  .rows.overflow
+    box-shadow 0 0 10px rgba(0, 0, 0, .2)
 
