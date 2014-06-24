@@ -90,7 +90,7 @@ define(function (require) {
 
             //记录相对于content的xy
             function recordXY(ev) {
-                stopX = ev.pageX -initPageX + initX
+                stopX = ev.pageX - initPageX + initX
                 stopY = ev.pageY - initPageY + initY
                 self.resetInput({start: self.getPoint(initX, initY), stop: self.getPoint(stopX, stopY)})
             }
@@ -131,17 +131,18 @@ define(function (require) {
         Excel.prototype.getPoint = function (x, y) {
             var rowIndex = 0, columnIndex = 0
 
+
             for (var i = 0; i < this.colNode.length; i++) {
                 var obj = this.colNode[i]
-                if (obj.offsetLeft > x) {
-                    columnIndex = i - 1
+                if (obj.offsetLeft + obj.offsetWidth >= x) {
+                    columnIndex = i
                     break
                 }
             }
 
             for (var j = 0; j < this.rowNode.length; j++) {
-                if (this.rowNode[j].offsetTop > y) {
-                    rowIndex = j - 1
+                if (this.rowNode[j].offsetTop + this.rowNode[j].offsetHeight >= y) {
+                    rowIndex = j
                     break
                 }
             }
@@ -161,13 +162,13 @@ define(function (require) {
         Excel.prototype.resetInput = function (o) {
 
 
-            var startCol = o.start.colIndex <= o.stop.colIndex ? o.start.colIndex : o.stop.colIndex
-            var startRow = o.start.rowIndex <= o.stop.rowIndex ? o.start.rowIndex : o.stop.rowIndex
+            var startCol = o.start.colIndex < o.stop.colIndex ? o.start.colIndex : o.stop.colIndex
+            var startRow = o.start.rowIndex < o.stop.rowIndex ? o.start.rowIndex : o.stop.rowIndex
 
-            var endCol = o.stop.colIndex >= o.start.colIndex ? o.stop.colIndex : o.start.colIndex
-            var endRow = o.stop.rowIndex >= o.start.rowIndex ? o.stop.rowIndex : o.start.rowIndex
+            var endCol = o.stop.colIndex > o.start.colIndex ? o.stop.colIndex : o.start.colIndex
+            var endRow = o.stop.rowIndex > o.start.rowIndex ? o.stop.rowIndex : o.start.rowIndex
 
-            console.log(startCol, startRow, endCol, endRow)
+            console.log(JSON.stringify(o))
 
             //
 
@@ -176,10 +177,13 @@ define(function (require) {
             if (endCol > this.colNode.length) endCol = this.colNode.length - 1
             if (endRow > this.rowNode.length) endRow = this.rowNode.length - 1
 
+
+            console.log(startCol, startRow, endCol, endRow)
+
             this.$select.css({
                 left: this.colNode[startCol].offsetLeft,
                 width: this.colNode[endCol].offsetWidth + this.colNode[endCol].offsetLeft - this.colNode[startCol].offsetLeft,
-                top: this.rowNode[startRow].offsetTop,
+                top: this.rowNode[startRow].offsetTop + this.rowNode[startRow].offsetHeight,
                 height: this.rowNode[endRow].offsetHeight + this.rowNode[endRow].offsetTop - this.rowNode[startRow].offsetTop
             })
 
