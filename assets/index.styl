@@ -10,9 +10,9 @@ body
   border-radius 3px
   padding-left 35px
   padding-top 25px
-  height 400px
+  height 200px
   position relative
-  margin 5em
+  margin 5em 12em
   overflow auto
   .excel-container
     width 100%
@@ -25,10 +25,16 @@ body
     position absolute
     left 35px
     top 0
-    background #ccc
+    background: rgb(255, 255, 255); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 1)), color-stop(47%, rgba(246, 246, 246, 1)), color-stop(100%, rgba(237, 237, 237, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* W3C */
     height 25px
     white-space nowrap
-    z-index 2
+    z-index 100
     -webkit-transition box-shadow .2s ease-in-out;
     cursor default
     span
@@ -39,18 +45,24 @@ body
       line-height 220%
       background url(field.png) 0 0 repeat-y
   .fields.overflow
-    box-shadow 0 0 10px rgba(0, 0, 0, .2)
+    box-shadow 12px 0 20px rgba(0, 0, 0, .3)
 
   .rows
-    background #ccc
+    background: rgb(255, 255, 255); /* Old browsers */
+    background: -moz-linear-gradient(left, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(255, 255, 255, 1)), color-stop(47%, rgba(246, 246, 246, 1)), color-stop(100%, rgba(237, 237, 237, 1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(left, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(left, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(left, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* IE10+ */
+    background: linear-gradient(to right, rgba(255, 255, 255, 1) 0%, rgba(246, 246, 246, 1) 47%, rgba(237, 237, 237, 1) 100%); /* W3C */
     width 35px
     position absolute
     left 0
     top 25px
+    z-index 101
     -webkit-transition box-shadow .2s ease-in-out;
     cursor default
     div
-      display box
       box-orient horizontal
       box-pack center
       box-align center
@@ -62,7 +74,7 @@ body
       -webkit-box-align center
       background url(rows.png) 0 0 repeat-x
   .rows.overflow
-    box-shadow 0 0 10px rgba(0, 0, 0, .2)
+    box-shadow 0 12px 20px rgba(0, 0, 0, .3)
 
 div.input
   padding 0
@@ -72,7 +84,7 @@ div.input
   margin-left 35px
   overflow hidden
   z-index 99
-  background rgba(0, 255, 0, .2)
+  background rgba(0, 0, 0, .1)
   textarea
     border none
     resize none

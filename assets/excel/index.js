@@ -42,6 +42,10 @@ define(function (require) {
             var $fields = $node.find('>div.excel-wrapper>div.excel-content>div.fields')
             var $rows = $node.find('>div.excel-wrapper>div.excel-content>div.rows')
 
+            this.$fields = $fields
+            this.$rows = $rows
+
+
             $wrapper.on('scroll', function () {
                 var $this = $(this)
                 var left = $this.scrollTop()
@@ -69,19 +73,30 @@ define(function (require) {
                 console.log('正在输入', this.value)
             })
 
-            var initX, initY, stopX, stopY;
-            var initPageX, initPageY
+            var initX, initY, initPageX, initPageY
+
+            var initScrollLeft = 0, initScrollTop = 0, currentScrollLeftOffset = 0, currentScrollTopOffset = 0
 
             self.$content.on('mousedown', bind)
 
             function bind(ev) {
                 var offset = self.$content.offset()
+
+                //记录初始点击的坐标
                 initX = ev.pageX - offset.left, initY = ev.pageY - offset.top
+
+                //记录初始的pageX，pageY
                 initPageX = ev.pageX, initPageY = ev.pageY
+
+                //记录初始的的scrollLeft,scrollTop
+                initScrollLeft = self.$wrapper.scrollLeft()
+                initScrollTop = self.$wrapper.scrollTop()
+
                 recordXY(ev)
                 $document.on('mousemove', recordXY)
-                $document.on('mouseup', off)
                 $document.on('selectstart', preventDefaultSelectStart)
+                $document.on('mouseup', off)
+                self.$wrapper.on('scroll', scrollOffset)
 
             }
 
@@ -91,15 +106,27 @@ define(function (require) {
 
             function off() {
                 $document.off('mousemove', recordXY)
-                $document.off('mouseup', off)
                 $document.off('selectstart', preventDefaultSelectStart)
-                initX = initY = stopX = stopY = initPageX = initPageY = 0
+                initX = initY = initPageX = initPageY = 0
+                initScrollLeft = 0
+                initScrollTop = 0
+                currentScrollLeftOffset = 0
+                currentScrollTopOffset = 0
+                $document.off('mouseup', off)
+                self.$wrapper.off('scroll', scrollOffset)
+            }
+
+            //计算scroll滚动后的差值
+            function scrollOffset() {
+                currentScrollLeftOffset = self.$wrapper.scrollLeft() - initScrollLeft
+                currentScrollTopOffset = self.$wrapper.scrollTop() - initScrollTop
+                console.log('漂移', currentScrollLeftOffset, currentScrollTopOffset)
             }
 
             //记录相对于content的xy
             function recordXY(ev) {
-                stopX = ev.pageX - initPageX + initX
-                stopY = ev.pageY - initPageY + initY
+                var stopX = ev.pageX - initPageX + initX + currentScrollLeftOffset
+                var stopY = ev.pageY - initPageY + initY + currentScrollTopOffset
                 self.resetInput({start: self.getPoint(initX, initY), stop: self.getPoint(stopX, stopY)})
             }
 
@@ -155,6 +182,17 @@ define(function (require) {
                 }
             }
 
+            //判断x或y是否超过了任何一个元素
+            if (x >= this.$wrapper[0].scrollWidth - this.$rows.width()) {
+                columnIndex = this.colNode.length - 1
+            }
+
+            if (y >= this.$wrapper[0].scrollHeight - this.$fields.height()) {
+                rowIndex = this.rowNode.length - 1
+            }
+
+            console.log('colIndex', columnIndex, 'rowIndex', rowIndex, x, y)
+
             return {
                 colIndex: columnIndex,
                 rowIndex: rowIndex
@@ -177,8 +215,6 @@ define(function (require) {
             var endRow = o.stop.rowIndex > o.start.rowIndex ? o.stop.rowIndex : o.start.rowIndex
 
             console.log(JSON.stringify(o))
-
-            //
 
             if (startCol < 0) startCol = 0
             if (startRow < 0) startRow = 0
