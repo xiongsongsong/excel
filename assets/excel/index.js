@@ -54,6 +54,7 @@ define(function (require) {
                 $rows.css('left', $this.scrollLeft()).toggleClass('overflow', left > 10)
             })
 
+
             //存放几个关键元素的引用
             this.$wrapper = $wrapper
             this.$content = $wrapper.find('>div.excel-content')
@@ -120,15 +121,26 @@ define(function (require) {
             function scrollOffset() {
                 currentScrollLeftOffset = self.$wrapper.scrollLeft() - initScrollLeft
                 currentScrollTopOffset = self.$wrapper.scrollTop() - initScrollTop
-                console.log('漂移', currentScrollLeftOffset, currentScrollTopOffset)
             }
 
             //记录相对于content的xy
             function recordXY(ev) {
                 var stopX = ev.pageX - initPageX + initX + currentScrollLeftOffset
                 var stopY = ev.pageY - initPageY + initY + currentScrollTopOffset
-                self.resetInput({start: self.getPoint(initX, initY), stop: self.getPoint(stopX, stopY)})
+                self.getPointOffset({start: self.getPoint(initX, initY), stop: self.getPoint(stopX, stopY)})
+                self.setPointOffset()
             }
+
+
+            //默认选中第0个单元格
+            this.point = {
+                startCol: 0,
+                startRow: 0,
+                endCol: 0,
+                endRow: 0
+            }
+
+            this.setPointOffset()
 
         }
 
@@ -191,8 +203,6 @@ define(function (require) {
                 rowIndex = this.rowNode.length - 1
             }
 
-            console.log('colIndex', columnIndex, 'rowIndex', rowIndex, x, y)
-
             return {
                 colIndex: columnIndex,
                 rowIndex: rowIndex
@@ -205,7 +215,7 @@ define(function (require) {
          * 定位单元格到某个字段或区域
          * */
 
-        Excel.prototype.resetInput = function (o) {
+        Excel.prototype.getPointOffset = function (o) {
 
 
             var startCol = o.start.colIndex < o.stop.colIndex ? o.start.colIndex : o.stop.colIndex
@@ -214,23 +224,29 @@ define(function (require) {
             var endCol = o.stop.colIndex > o.start.colIndex ? o.stop.colIndex : o.start.colIndex
             var endRow = o.stop.rowIndex > o.start.rowIndex ? o.stop.rowIndex : o.start.rowIndex
 
-            console.log(JSON.stringify(o))
-
             if (startCol < 0) startCol = 0
             if (startRow < 0) startRow = 0
             if (endCol > this.colNode.length) endCol = this.colNode.length - 1
             if (endRow > this.rowNode.length) endRow = this.rowNode.length - 1
 
-
             console.log(startCol, startRow, endCol, endRow)
 
-            this.$select.css({
-                left: this.colNode[startCol].offsetLeft,
-                width: this.colNode[endCol].offsetWidth + this.colNode[endCol].offsetLeft - this.colNode[startCol].offsetLeft,
-                top: this.rowNode[startRow].offsetTop + this.rowNode[startRow].offsetHeight,
-                height: this.rowNode[endRow].offsetHeight + this.rowNode[endRow].offsetTop - this.rowNode[startRow].offsetTop
-            })
+            this.point = {
+                startCol: startCol,
+                startRow: startRow,
+                endCol: endCol,
+                endRow: endRow
+            }
+        }
 
+        Excel.prototype.setPointOffset = function () {
+            var point = this.point
+            this.$select.css({
+                left: this.colNode[point.startCol].offsetLeft,
+                width: this.colNode[point.endCol].offsetWidth + this.colNode[point.endCol].offsetLeft - this.colNode[point.startCol].offsetLeft,
+                top: this.rowNode[point.startRow].offsetTop + this.rowNode[point.startRow].offsetHeight,
+                height: this.rowNode[point.endRow].offsetHeight + this.rowNode[point.endRow].offsetTop - this.rowNode[point.startRow].offsetTop
+            })
         }
 
 //    Excel.prototype.resetRowsPosition = function () {
