@@ -5,6 +5,10 @@ define(function (require) {
         var $head = $('head')
         var $document = $(document)
 
+        //todo:blur、focus应该抽象出来
+        //todo：例如单元格中上传图片的功能。拖曳到对应单元格则完成图片上传
+
+
         function Excel(selector) {
 
             var id = Math.random().toString().substring(2) + Date.now()
@@ -162,6 +166,8 @@ define(function (require) {
                 }
                 $node.text(value).show()
                 this.value = ''
+
+
             })
 
             this.$input.on('focus', function () {
