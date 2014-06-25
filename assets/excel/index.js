@@ -118,6 +118,7 @@ define(function (require) {
                 currentScrollTopOffset = 0
                 $document.off('mouseup', off)
                 self.$wrapper.off('scroll', scrollOffset)
+                self.$input.trigger('focus')
             }
 
             //计算scroll滚动后的差值
