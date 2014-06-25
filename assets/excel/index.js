@@ -75,16 +75,24 @@ define(function (require) {
             self.$content.on('mousedown', bind)
 
             function bind(ev) {
-                initX = ev.offsetX, initY = ev.offsetY
+                var offset = self.$content.offset()
+                initX = ev.pageX - offset.left, initY = ev.pageY - offset.top
                 initPageX = ev.pageX, initPageY = ev.pageY
                 recordXY(ev)
                 $document.on('mousemove', recordXY)
                 $document.on('mouseup', off)
+                $document.on('selectstart', preventDefaultSelectStart)
+
+            }
+
+            function preventDefaultSelectStart(ev) {
+                ev.preventDefault()
             }
 
             function off() {
                 $document.off('mousemove', recordXY)
                 $document.off('mouseup', off)
+                $document.off('selectstart', preventDefaultSelectStart)
                 initX = initY = stopX = stopY = initPageX = initPageY = 0
             }
 
