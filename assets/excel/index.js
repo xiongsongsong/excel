@@ -159,7 +159,7 @@ define(function (require) {
                     self.$content.append('<i x="' + startCol + '" y="' + startRow + '"></i>')
                     $node = self.$content.find(selector)
                 }
-                $node.text(value)
+                $node.text(value).show()
                 this.value = ''
             })
 
@@ -170,7 +170,7 @@ define(function (require) {
                 $node = self.$content.find(selector)
                 if ($node.length > 0) {
                     this.value = $node.text()
-                    $node.text('')
+                    $node.hide()
                 }
             })
 
