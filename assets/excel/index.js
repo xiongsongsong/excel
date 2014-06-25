@@ -34,7 +34,9 @@ define(function (require) {
                 '<div class="rows">' + rowStr + '</div>' +
                 '</div>' +
                 '</div>' +
+                '<p id="info"></p>' +
                 '</div>').appendTo($(selector))
+
 
             this.nodeId = '#excel-' + id
             var $node = $(this.nodeId)
@@ -70,10 +72,6 @@ define(function (require) {
             self.$select = self.$content.find('>div.input')
             self.$input = self.$select.find('>textarea')
 
-            this.$input.on('input', function (ev) {
-                console.log('正在输入', this.value)
-            })
-
             var initX, initY, initPageX, initPageY
 
             var initScrollLeft = 0, initScrollTop = 0, currentScrollLeftOffset = 0, currentScrollTopOffset = 0
@@ -81,6 +79,9 @@ define(function (require) {
             self.$content.on('mousedown', bind)
 
             function bind(ev) {
+
+                self.$input.trigger('blur')
+
                 var offset = self.$content.offset()
 
                 //记录初始点击的坐标
@@ -98,7 +99,9 @@ define(function (require) {
                 $document.on('selectstart', preventDefaultSelectStart)
                 $document.on('mouseup', off)
                 self.$wrapper.on('scroll', scrollOffset)
-
+                setTimeout(function () {
+                    self.$input.focus()
+                }, 0)
             }
 
             function preventDefaultSelectStart(ev) {
@@ -131,7 +134,6 @@ define(function (require) {
                 self.setPointOffset()
             }
 
-
             //默认选中第0个单元格
             this.point = {
                 startCol: 0,
@@ -142,6 +144,37 @@ define(function (require) {
 
             this.setPointOffset()
 
+            //开始绑定输入框
+
+            this.$input.on('blur', function (ev) {
+
+                var value = this.value
+                console.log('当前位置', self.point.startCol, self.point.startRow, '内容' + value)
+                var startCol = self.point.startCol
+                var startRow = self.point.startRow
+                var selector = 'i[x=' + startCol + '][y=' + startRow + ']'
+
+                var $node = self.$content.find(selector)
+                if ($node.length < 1) {
+                    self.$content.append('<i x="' + startCol + '" y="' + startRow + '"></i>')
+                    $node = self.$content.find(selector)
+                }
+                $node.text(value)
+                this.value = ''
+            })
+
+            this.$input.on('focus', function () {
+                var startCol = self.point.startCol
+                var startRow = self.point.startRow
+                var selector = 'i[x=' + startCol + '][y=' + startRow + ']'
+                $node = self.$content.find(selector)
+                if ($node.length > 0) {
+                    this.value = $node.text()
+                    $node.text('')
+                }
+            })
+
+
         }
 
         /*
@@ -150,13 +183,29 @@ define(function (require) {
         Excel.prototype.resetGridPosition = function () {
 
             var cssText = []
+            var gridOffset = []
 
+            var fieldHeight = this.$fields.height()
+            var rowWidth = this.$rows.width()
             for (var i = 0; i < this.colNode.length; i++) {
-                cssText.push('url(field.png) ' + this.colNode[i].offsetLeft + 'px 0 repeat-y')
+                var left = this.colNode[i].offsetLeft
+                var width = this.colNode[i].offsetWidth
+                cssText.push('url(field.png) ' + left + 'px 0 repeat-y')
+                //字段x方位的坐标
+                gridOffset.push(this.nodeId + ' [x="' + i + '"]{' +
+                    'left:' + ( left + rowWidth) + 'px;' +
+                    'width:' + width + 'px;' +
+                    '}')
             }
 
             for (var j = 0; j < this.rowNode.length; j++) {
-                cssText.push('url(rows.png) 0 ' + this.rowNode[j].offsetTop + 'px repeat-x')
+                var top = this.rowNode[j].offsetTop
+                var height = this.rowNode[j].offsetHeight
+                cssText.push('url(rows.png) 0 ' + top + 'px repeat-x')
+                gridOffset.push(this.nodeId + ' [y="' + j + '"]{' +
+                    'top:' + (top + fieldHeight) + 'px;' +
+                    'height:' + height + 'px;' +
+                    '}')
             }
 
             var lastField = this.colNode[this.colNode.length - 1]
@@ -166,7 +215,14 @@ define(function (require) {
                 height: lastRow.offsetTop + lastRow.offsetHeight
             })
 
-            this.$styleNode.html(this.nodeId + ' .excel-content{background:' + cssText.join(',') + ';' + '}')
+            //网格线的坐标
+            var rule = this.nodeId + ' .excel-content{background:' + cssText.join(',') + ';' + '}'
+            rule += gridOffset.join('\r\n')
+            //各个单元格的坐标
+
+            this.$styleNode.html(rule)
+
+
         }
 
         /*
