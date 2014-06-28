@@ -11,7 +11,7 @@ define(function (require) {
 
         function Excel(selector) {
 
-            var id = Math.random().toString().substring(2) + Date.now()
+            var id = 'abcsadfasdfasfasf'
             this.styleNodeId = 'style' + id
 
             $('<style style="text/css" id="' + this.styleNodeId + '"></style>').appendTo($head)
@@ -25,7 +25,7 @@ define(function (require) {
             }
 
             var rowStr = ''
-            for (var j = 1; j < 50; j++) {
+            for (var j = 1; j < 100; j++) {
                 rowStr += '<div class="r' + j + '"><p>' + j + '</p></div>'
             }
 
@@ -334,10 +334,8 @@ define(function (require) {
 //
 //    }
 
-        var excel = new Excel('#data-container')
-        setInterval(function () {
-            excel.resetGridPosition()
-        }, 1000)
+        var excel = new Excel('#data-container', {})
+        excel.resetGridPosition()
 
     }
 )

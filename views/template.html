@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+<h2>#mm(首焦|标题) $a #end</h2>
+<ul>
+    #mm(首焦,banner,row=3,defaultRow=10,field=text)
+        #each
+            <li>#{text.toString()}</li>
+
+            <li>#{text}</li>
+        #end
+    #end
+    #mm(首焦,新闻列表JSON,row=3,)#{JSON.stringify(this)}#end
+</ul>
+
+
+<!--
+该模板引擎只有3中语法
+#mm 申明标签
+#each 循环当前列表，不支持嵌套，但拥有作用域
+#if #elseif #else #end  判断
+#js 支持任意JS
+-->
+
+
+</body>
+</html>
