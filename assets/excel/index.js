@@ -20,19 +20,19 @@ define(function (require, exports, module) {
 
         var fieldsStr = ''
 
-        cfg.fields.forEach(function (item, index) {
+        cfg.fields.forEach(function (item) {
             fieldsStr += '<span data->' + item + '</span>'
         })
 
         var rowStr = ''
-        for (var j = 1; j < 100; j++) {
-            rowStr += '<div class="r' + j + '"><p>' + j + '</p></div>'
+        for (var j = 0; j < cfg.rows; j++) {
+            rowStr += '<div class="r' + j + '"><p>' + (j + 1) + '</p></div>'
         }
 
         //创建字段
 
         $('<div id="excel-' + id + '">' +
-            '<div class="excel-wrapper">' +
+            '<div class="excel-wrapper" tabindex="0">' +
             '<div class="excel-content">' +
             '<div class="fields">' + fieldsStr + '</div>' +
             '<div class="rows">' + rowStr + '</div>' +
@@ -51,6 +51,8 @@ define(function (require, exports, module) {
         this.$fields = $fields
         this.$rows = $rows
 
+        //存储事件队列
+        this.eventQueue = []
 
         $wrapper.on('scroll', function () {
             var $this = $(this)
@@ -145,8 +147,66 @@ define(function (require, exports, module) {
 
         this.setPointOffset()
 
-        //存储事件队列
-        this.eventQueue = []
+
+        //键盘控制单元格
+        self.$wrapper.on('keydown', function (ev) {
+            if ([9, 13, 37, 38, 39, 40].indexOf(ev.keyCode) > -1) ev.preventDefault()
+            var shift = ev.shiftKey
+
+            var colLength = self.colNode.length
+            var rowLength = self.rowNode.length
+
+            switch (ev.keyCode) {
+                //左
+                case 37:
+
+                    self.point.startCol -= 1
+                    if (self.point.startCol < 0) self.point.startCol = 0
+                    if (self.point.endCol < 0) self.point.endCol = 0
+
+                    if (!shift) {
+                        self.point.endCol = self.point.startCol
+                        self.point.endRow = self.point.startRow
+                    }
+
+                    break;
+                //上
+                case 38:
+                    self.point.startRow -= 1
+                    if (self.point.startRow < 0) self.point.startRow = 0
+                    if (self.point.endRow < 0) self.point.endRow = 0
+
+                    if (!shift) {
+                        self.point.endRow = self.point.startRow
+                        self.point.endCol = self.point.startCol
+                    }
+
+                    break;
+                //右
+                case 39:
+                    self.point.endCol += 1
+                    if (self.point.endCol > colLength - 1) self.point.endCol = colLength - 1
+                    if (self.point.startCol > colLength - 1) self.point.startCol = colLength - 1
+                    if (!shift) {
+                        self.point.startCol = self.point.endCol
+                        self.point.startRow = self.point.endRow
+                    }
+
+                    break;
+                //下
+                case 40:
+                    self.point.endRow += 1
+                    if (self.point.startRow > rowLength - 1) self.point.startRow = rowLength - 1
+                    if (self.point.endRow > rowLength - 1) self.point.endRow = rowLength - 1
+                    if (!shift) {
+                        self.point.startRow = self.point.endRow
+                        self.point.endCol = self.point.startCol
+                    }
+
+            }
+            self.setPointOffset()
+        })
+
 
     }
 
@@ -294,6 +354,7 @@ define(function (require, exports, module) {
             top: this.rowNode[point.startRow].offsetTop + this.rowNode[point.startRow].offsetHeight,
             height: this.rowNode[point.endRow].offsetHeight + this.rowNode[point.endRow].offsetTop - this.rowNode[point.startRow].offsetTop
         })
+        this.trigger('select')
     }
 
     module.exports = Excel
