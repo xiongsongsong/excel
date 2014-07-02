@@ -368,7 +368,6 @@ define(function (require, exports, module) {
             top: this.rowNode[point.startRow].offsetTop + this.rowNode[point.startRow].offsetHeight,
             height: this.rowNode[point.endRow].offsetHeight + this.rowNode[point.endRow].offsetTop - this.rowNode[point.startRow].offsetTop
         })
-        this.trigger('select')
     }
 
     module.exports = Excel
