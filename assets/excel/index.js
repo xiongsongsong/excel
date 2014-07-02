@@ -11,8 +11,8 @@ define(function (require, exports, module) {
 
     function Excel(selector, cfg) {
 
-        var id = 'abcsadfasdfasfasf'
-        this.styleNodeId = 'style' + id
+        var id = +(new Date()) + '' + Math.random().toString().substring(2, 8)
+        this.styleNodeId = 'excel-style-' + id
 
         $('<style style="text/css" id="' + this.styleNodeId + '"></style>').appendTo($head)
 
@@ -316,11 +316,6 @@ define(function (require, exports, module) {
         if (y >= this.$wrapper[0].scrollHeight - this.$fields.height()) {
             rowIndex = this.rowNode.length - 1
         }
-
-        console.log(columnIndex, rowIndex)
-
-        if (y < 0) rowIndex = 0
-        if (x < 0) columnIndex = 0
 
         return {
             colIndex: columnIndex,
