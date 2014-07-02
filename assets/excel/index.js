@@ -133,7 +133,8 @@ define(function (require, exports, module) {
         function recordXY(ev) {
             var stopX = ev.pageX - initPageX + initX + currentScrollLeftOffset
             var stopY = ev.pageY - initPageY + initY + currentScrollTopOffset
-            self.getPointOffset({start: self.getPoint(initX, initY), stop: self.getPoint(stopX, stopY)})
+            self.getPointOffset(initX, initY, {start: self.getPoint(initX, initY), stop: self.getPoint(stopX, stopY)})
+
             self.setPointOffset()
         }
 
@@ -150,7 +151,11 @@ define(function (require, exports, module) {
 
         //键盘控制单元格
         self.$wrapper.on('keydown', function (ev) {
-            if ([9, 13, 37, 38, 39, 40].indexOf(ev.keyCode) > -1) ev.preventDefault()
+            if ([9, 13, 37, 38, 39, 40].indexOf(ev.keyCode) < 0) {
+                return
+            }
+
+            ev.preventDefault()
             var shift = ev.shiftKey
 
             var colLength = self.colNode.length
@@ -312,6 +317,11 @@ define(function (require, exports, module) {
             rowIndex = this.rowNode.length - 1
         }
 
+        console.log(columnIndex, rowIndex)
+
+        if (y < 0) rowIndex = 0
+        if (x < 0) columnIndex = 0
+
         return {
             colIndex: columnIndex,
             rowIndex: rowIndex
@@ -324,8 +334,7 @@ define(function (require, exports, module) {
      * 定位单元格到某个字段或区域
      * */
 
-    Excel.prototype.getPointOffset = function (o) {
-
+    Excel.prototype.getPointOffset = function (x, y, o) {
 
         var startCol = o.start.colIndex < o.stop.colIndex ? o.start.colIndex : o.stop.colIndex
         var startRow = o.start.rowIndex < o.stop.rowIndex ? o.start.rowIndex : o.stop.rowIndex
@@ -337,6 +346,16 @@ define(function (require, exports, module) {
         if (startRow < 0) startRow = 0
         if (endCol > this.colNode.length) endCol = this.colNode.length - 1
         if (endRow > this.rowNode.length) endRow = this.rowNode.length - 1
+
+        if (x < 0) {
+            startCol = 0
+            endCol = this.colNode.length - 1
+        }
+
+        if (y < 0) {
+            startRow = 0
+            endRow = this.rowNode.length - 1
+        }
 
         this.point = {
             startCol: startCol,
