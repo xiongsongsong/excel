@@ -3,21 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+    <style>
+        body{
+            background: #aaa;
+        }
+        textarea{
+            width: 45%;
+            float: left;
+            padding: 12px;
+            margin: 0 5px;
+            height: 550px;
+            border-radius: 3px;
+            background: #ccc;
+            font-size: 14px;
+            font-family: Monaco,sans-serif;
+        }
+    </style>
 </head>
 <body>
-<h2>#mm(首焦|标题) $a #end</h2>
-<ul>
-    #mm(首焦,banner,row=3,defaultRow=10,field=text)
-        #each
-            <li>#{text.toString()}</li>
-
-            <li>#{text}</li>
-        #end
-    #end
-    #mm(首焦,新闻列表JSON,row=3,)#{JSON.stringify(this)}#end
-</ul>
-
-
+<textarea id="good">
+- var good = fields (title_标题_text,price_价格_number,date_日期_date)
+- var category = fields (title_标题_text,price_价格_number,date_日期_date)
+- good.forEach(function(i,item){
+    <li>#{b}</li>
+    - var abc=123
+    - if($index/2==0) {
+        <li>偶竖行</li>
+    - }else{
+        <li>奇数行</li>
+    - }
+    <li class="#{ i / 2 == 0 ? 'odd' : 'add' }"></li>
+#{item.first} }}}</li>#{item.first2} }}}</li>
+\#{item.first}</li>
+- })
+</textarea>
+<textarea id="output"></textarea>
+<script src="../assets/seajs-2.3.0/sea.js"></script>
+<script>
+    seajs.use('../assets/template/index', function (Template) {
+        var tpl = new Template(good.value)
+        good.oninput = function () {
+            tpl.compile()
+        }
+        good.onclick = function () {
+            tpl.compile()
+        }
+    })
+</script>
 <!--
 该模板引擎只有3中语法
 #mm 申明标签
