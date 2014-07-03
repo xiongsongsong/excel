@@ -157,10 +157,14 @@ define(function (require, exports, module) {
                 return
             }
 
+            var shift = ev.shiftKey
+            var alt = ev.altKey
+
+            if (ev.keyCode == 13 && alt) return;
+
             self.trigger('selectStart')
 
             ev.preventDefault()
-            var shift = ev.shiftKey
 
             var colLength = self.colNode.length
             var rowLength = self.rowNode.length

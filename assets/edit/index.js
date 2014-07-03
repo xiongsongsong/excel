@@ -30,6 +30,13 @@ define(function (require, exports, module) {
         saveCellData.call(excel, x, y)
     })
 
+    excel.$input.on('blur', function () {
+        //获得第一个节点的坐标信息
+        var x = excel.point.startCol
+        var y = excel.point.startRow
+        saveCellData.call(excel, x, y)
+    })
+
     excel.on('select', function () {
         //获得第一个节点的坐标信息
         var x = excel.point.startCol
@@ -44,6 +51,10 @@ define(function (require, exports, module) {
         setTimeout(function () {
             self.$input.focus()
         }, 0)
+    })
+
+    excel.$input.on('mousedown', function (ev) {
+        ev.stopPropagation()
     })
 
     excel.resetGridPosition()
