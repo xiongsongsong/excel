@@ -153,7 +153,7 @@ define(function (require, exports, module) {
         //键盘控制单元格
         self.$wrapper.on('keydown', function (ev) {
 
-            if ([9, 13].indexOf(ev.keyCode) < 0) {
+            if ([9, 13, 38, 40].indexOf(ev.keyCode) < 0) {
                 return
             }
 
@@ -174,6 +174,7 @@ define(function (require, exports, module) {
                         up()
                     }
                 }
+                self.point.endRow = self.point.startRow
                 self.point.endCol = self.point.startCol
             }
 
@@ -181,10 +182,8 @@ define(function (require, exports, module) {
                 self.point.startRow -= 1
                 if (self.point.startRow < 0) self.point.startRow = 0
                 if (self.point.endRow < 0) self.point.endRow = 0
-                if (shift) {
-                    self.point.endRow = self.point.startRow
-                    self.point.endCol = self.point.startCol
-                }
+                self.point.endRow = self.point.startRow
+                self.point.endCol = self.point.startCol
             }
 
             function right() {
@@ -198,9 +197,11 @@ define(function (require, exports, module) {
                         self.point.startCol = self.point.endCol = colLength - 1
                     }
                 }
+                self.point.endRow = self.point.startRow
             }
 
             function down() {
+                self.point.endRow = self.point.startRow
                 self.point.endRow += 1
                 if (self.point.startRow > rowLength - 1) self.point.startRow = rowLength - 1
                 if (self.point.endRow > rowLength - 1) self.point.endRow = rowLength - 1
@@ -208,13 +209,15 @@ define(function (require, exports, module) {
                 self.point.endCol = self.point.startCol
             }
 
-            switch (ev.keyCode) {
-                case 9:
-                    shift ? left() : right()
-                    break;
-                case 13:
-                    shift ? up() : down()
-                    break;
+            if (ev.keyCode == 9) {
+                shift ? left() : right()
+            } else if (ev.keyCode == 13) {
+                shift ? up() : down()
+            } else if (ev.keyCode === 38) {
+
+                up()
+            } else if (ev.keyCode == 40) {
+                down()
             }
             self.setPointOffset()
             self.trigger('select')
