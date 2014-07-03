@@ -24,7 +24,7 @@ define(function (require, exports, module) {
             return result === '' + html ? html : result;
         }
 
-        this.compileStr = GLOBAL_ESCAPE.toString() + ';var MMD=\'\';' +
+        this.compileStr = GLOBAL_ESCAPE.toString() + ';var echo=\'\';' +
             this.tpl.split(/[\r\n]/gm).map(function (item) {
                 if (/^[\s]*-(.+)$/.test(item)) {
                     return RegExp.$1
@@ -39,10 +39,11 @@ define(function (require, exports, module) {
                         return '\'+' + (c === '#' ? 'GLOBAL_ESCAPE' : '') + '(' + d.replace(/\\'/g, '\'') + ')+\''
                     }
                 })
-                return 'MMD+=(\'' + _item + '\')'
+                return 'echo+=(\'' + _item + '\')'
 
             }).join('\r\n')
-        this.compileStr += ';return MMD;'
+        this.compileStr += ';return echo;'
+        output.value = this.compileStr
         return this
     }
 

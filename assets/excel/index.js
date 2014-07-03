@@ -72,10 +72,10 @@ define(function (require, exports, module) {
         var self = this
 
         //插入编辑节点
-        self.$content.append($('<div class="input"></div>'))
-
+        self.$content.append($('<div class="select"><textarea></textarea></div>'))
         //输入框节点
-        self.$select = self.$content.find('>div.input')
+        self.$select = self.$content.find('>div.select')
+        self.$input = self.$content.find('textarea')
 
         var initX, initY, initPageX, initPageY
 
@@ -84,6 +84,7 @@ define(function (require, exports, module) {
         self.$content.on('mousedown', bind)
 
         function bind(ev) {
+            self.trigger('selectStart', self.point)
 
             var offset = self.$content.offset()
 
@@ -151,9 +152,12 @@ define(function (require, exports, module) {
 
         //键盘控制单元格
         self.$wrapper.on('keydown', function (ev) {
-            if ([9, 13, 37, 38, 39, 40].indexOf(ev.keyCode) < 0) {
+
+            if ([9, 13].indexOf(ev.keyCode) < 0) {
                 return
             }
+
+            self.trigger('selectStart')
 
             ev.preventDefault()
             var shift = ev.shiftKey
@@ -161,55 +165,59 @@ define(function (require, exports, module) {
             var colLength = self.colNode.length
             var rowLength = self.rowNode.length
 
+            function left() {
+                self.point.startCol -= 1
+                if (self.point.startCol < 0) {
+                    self.point.startCol = 0
+                    if (self.point.startRow > 0) {
+                        self.point.startCol = colLength - 1
+                        up()
+                    }
+                }
+                self.point.endCol = self.point.startCol
+            }
+
+            function up() {
+                self.point.startRow -= 1
+                if (self.point.startRow < 0) self.point.startRow = 0
+                if (self.point.endRow < 0) self.point.endRow = 0
+                if (shift) {
+                    self.point.endRow = self.point.startRow
+                    self.point.endCol = self.point.startCol
+                }
+            }
+
+            function right() {
+                self.point.startCol += 1
+                self.point.endCol = self.point.startCol
+                if (self.point.startCol > colLength - 1) {
+                    if (self.point.startRow < rowLength - 1) {
+                        self.point.startCol = self.point.endCol = 0
+                        down()
+                    } else {
+                        self.point.startCol = self.point.endCol = colLength - 1
+                    }
+                }
+            }
+
+            function down() {
+                self.point.endRow += 1
+                if (self.point.startRow > rowLength - 1) self.point.startRow = rowLength - 1
+                if (self.point.endRow > rowLength - 1) self.point.endRow = rowLength - 1
+                self.point.startRow = self.point.endRow
+                self.point.endCol = self.point.startCol
+            }
+
             switch (ev.keyCode) {
-                //左
-                case 37:
-
-                    self.point.startCol -= 1
-                    if (self.point.startCol < 0) self.point.startCol = 0
-                    if (self.point.endCol < 0) self.point.endCol = 0
-
-                    if (!shift) {
-                        self.point.endCol = self.point.startCol
-                        self.point.endRow = self.point.startRow
-                    }
-
+                case 9:
+                    shift ? left() : right()
                     break;
-                //上
-                case 38:
-                    self.point.startRow -= 1
-                    if (self.point.startRow < 0) self.point.startRow = 0
-                    if (self.point.endRow < 0) self.point.endRow = 0
-
-                    if (!shift) {
-                        self.point.endRow = self.point.startRow
-                        self.point.endCol = self.point.startCol
-                    }
-
+                case 13:
+                    shift ? up() : down()
                     break;
-                //右
-                case 39:
-                    self.point.endCol += 1
-                    if (self.point.endCol > colLength - 1) self.point.endCol = colLength - 1
-                    if (self.point.startCol > colLength - 1) self.point.startCol = colLength - 1
-                    if (!shift) {
-                        self.point.startCol = self.point.endCol
-                        self.point.startRow = self.point.endRow
-                    }
-
-                    break;
-                //下
-                case 40:
-                    self.point.endRow += 1
-                    if (self.point.startRow > rowLength - 1) self.point.startRow = rowLength - 1
-                    if (self.point.endRow > rowLength - 1) self.point.endRow = rowLength - 1
-                    if (!shift) {
-                        self.point.startRow = self.point.endRow
-                        self.point.endCol = self.point.startCol
-                    }
-
             }
             self.setPointOffset()
+            self.trigger('select')
         })
 
 
