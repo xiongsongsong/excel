@@ -57,25 +57,3 @@ define(function (require, exports, module) {
     module.exports = Template
 
 })
-function GLOBAL_ESCAPE(html) {
-    var result = String(html)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    return result === '' + html ? html : result;
-};var echo=''; var good = fields (title_标题_text,price_价格_number,date_日期_date)
-var category = fields (title_标题_text,price_价格_number,date_日期_date)
-good.forEach(function(i,item){
-    echo+=('    <li>'+GLOBAL_ESCAPE(b)+'</li>\r\n')
-    var abc=123
-    if($index/2==0) {
-        echo+=('        <li>偶竖行</li>\r\n')
-    }else{
-        echo+=('        <li>奇数行</li>\r\n')
-    }
-    echo+=('    <li class="'+GLOBAL_ESCAPE( i / 2 == 0 ? 'odd' : 'add' )+'"></li>\r\n')
-    echo+=(''+GLOBAL_ESCAPE(item.first)+' }}}</li>'+GLOBAL_ESCAPE(item.first2)+' }}}</li>\r\n')
-    echo+=('\\#{item.first}</li>\r\n')
-})
-echo+=('\r\n');return echo;
