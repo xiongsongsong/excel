@@ -1,0 +1,40 @@
+body, ul, p, h1, h2, h3, h4
+  margin 0
+  padding 0
+
+body
+  background #000
+
+ul, li {
+  list-style-type: none;
+}
+
+.hide
+  display none
+
+css-anim()
+  -webkit-transition: all arguments ease;
+  -moz-transition: all arguments ease;
+  -o-transition: all arguments ease;
+  -ms-transition: all arguments ease;
+  transition: all arguments ease;
+
+#nav
+  height 42px
+  background #519A73
+  font-size 12px
+  line-height 42px
+  padding-left 1em
+  opacity .5
+  css-anim 0.2s
+  position relative
+  z-index 2
+  box-shadow 0 1px 1px rgba(0, 0, 0, .2)
+  a
+    color #fff
+    display inline-block
+    padding 0 1em
+    text-decoration none
+
+#nav:hover
+  opacity 1
