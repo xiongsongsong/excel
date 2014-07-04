@@ -30,9 +30,9 @@ define(function (require, exports, module) {
                     return RegExp.$1
                 }
                 var map = {}, index = 0, prefix = '¶_sQ_mGj_TpL_pLaCeHoLdEr_¶'
-                item = item.replace(/(\\)*?([!#])\{([^}]+)?\}/g, function (a, b, c, d) {
-                    if (b !== undefined) return a.replace(/\\/gmi, '\\\\')
-                    map[(++index).toString()] = '\'+' + (c === '#' ? 'escape' : '') + '(' + (d ? d.replace(/\\'/g, '\'') : "''") + ')+\''
+                item = item.replace(/(\\)*?([!#])\{([^}]+?)\}/g, function (a, b, c, d) {
+                    if (b !== undefined) return a
+                    map[(++index)] = '\'+' + (c === '#' ? 'escape' : '') + '(' + (d ? d.replace(/\\'/g, '\'') : "''") + ')+\''
                     return prefix + index
                 })
                 item = 'echo+=(\'' + item.replace(/('|\\)/g, '\\$1') + '\\r\\n\')'
