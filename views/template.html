@@ -21,6 +21,7 @@
     </style>
 </head>
 <body>
+
 <textarea id="good">
 - var good = fields (title_标题_text,price_价格_number,date_日期_date)
 - var category = fields (title_标题_text,price_价格_number,date_日期_date)
@@ -32,9 +33,9 @@
     - }else{
         <li>奇数行</li>
     - }
-    <li class="#{ i / 2 == 0 ? 'odd' : 'add' }"></li>
+    <li class="'#{ i / 2 == 0 ? 'odd' : 'add' }\'\\\'''\'\'''''\\\\\\''\'\'\'\'"></li>
 #{item.first} }}}</li>#{item.first2} }}}</li>
-\#{item.first}</li>
+\#{item.first+''}\'\'\'''</li>
 - })
 </textarea>
 <textarea id="output"></textarea>
@@ -44,9 +45,11 @@
         var tpl = new Template(good.value)
         good.oninput = function () {
             tpl.compile()
+            output.value=tpl.compileStr
         }
         good.onclick = function () {
             tpl.compile()
+            output.value=tpl.compileStr
         }
     })
 </script>

@@ -15,7 +15,7 @@ define(function (require, exports, module) {
         //output.value = this.tpl.replace(/^[\s]*-[\s]*var[\s]+([\w_]+)[\s]*=[\s]*fields[\s]*\((.+)\)[\s]*$/gmi, '//$1=$2')
 
         //ref : jade
-        function GLOBAL_ESCAPE(html) {
+        function escape(html) {
             var result = String(html)
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
@@ -24,27 +24,22 @@ define(function (require, exports, module) {
             return result === '' + html ? html : result;
         }
 
-        this.compileStr = GLOBAL_ESCAPE.toString() + ';var echo=\'\';' +
+        this.compileStr = escape.toString() + ';var echo=\'\';' +
             this.tpl.split(/[\r\n]/gm).map(function (item) {
                 if (/^[\s]*-(.+)$/.test(item)) {
                     return RegExp.$1
                 }
-                //首先保护注释
-                var _item = item.replace(/'/g, '\\\'')
-                _item = _item.replace(/(\\)*?([!#])\{([^}]+)?\}/g, function (a, b, c, d) {
-                    //说明b是注释型
-                    if (b !== undefined) {
-                        return a.replace(/\\/gmi, '\\\\')
-                    } else {
-                        return '\'+' + (c === '#' ? 'GLOBAL_ESCAPE' : '') + '(' + d.replace(/\\'/g, '\'') + ')+\''
-                    }
+                var map = {}, index = 0, prefix = '¶_sQ_mGj_TpL_pLaCeHoLdEr_¶'
+                item = item.replace(/(\\)*?([!#])\{([^}]+)?\}/g, function (a, b, c, d) {
+                    if (b !== undefined) return a.replace(/\\/gmi, '\\\\')
+                    map[(++index).toString()] = '\'+' + (c === '#' ? 'escape' : '') + '(' + (d ? d.replace(/\\'/g, '\'') : "''") + ')+\''
+                    return prefix + index
                 })
-                return 'echo+=(\'' + _item + '\\r\\n\')'
-
+                item = 'echo+=(\'' + item.replace(/('|\\)/g, '\\$1') + '\\r\\n\')'
+                for (var k in map) item = item.replace(prefix + k, map[k])
+                return item
             }).join('\r\n')
         this.compileStr += ';return echo;'
-        output.value = this.compileStr
-        return this
     }
 
     /*
