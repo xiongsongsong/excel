@@ -35,10 +35,10 @@ nav-input-size()
   color #fcffb7
 
 #nav input[name=name]
-  width 180px
+  width 136px
 
 #nav input[name=name].empty
-  width 180px !important
+  width 136px !important
 
 #nav input[name=url]
   width 90px
@@ -77,5 +77,15 @@ nav-input-size()
 #nav label.control button:active
   background rgba(0, 0, 0, .5)
 
+@-webkit-keyframes gogogo
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+
+  25%, 75% {
+    opacity: 0;
+  }
+
 #nav input::-webkit-input-placeholder
   color #f2ffaa
+  -webkit-animation: gogogo 1s 1 linear;
