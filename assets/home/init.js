@@ -9,7 +9,17 @@ define(function () {
         form.elements.content.value = content.getSession()
         $.post(form.action, $form.serialize())
             .done(function (data) {
-                console.log(data)
+                if (data.code === 200 && data.doc._id) {
+                    location.href = '/page/' + data.doc._id + '/edit/data'
+                } else {
+                    alert(JSON.stringify(data, undefined, 4))
+                }
             })
+    })
+
+    //input自适应宽度
+    $form.on('input', 'input[name=name],input[name=url]', function () {
+        $(this).css('width', $form.find('span.' + this.name).text(this.value).width())
+        $(this).toggleClass('empty', this.value.trim().length < 1)
     })
 })

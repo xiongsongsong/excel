@@ -10,22 +10,30 @@ add.post('/page', function (req, res) {
 
     var body = req.body
 
+    body.name = body.name ? body.name.trim() : ''
+    body.url = body.url ? body.url.trim() : ''
+
     var err = []
 
-    //名称只允许汉字、字母、数字 - _
-    if (!/^[\u4E00-\u9FA5\w\d\?？-]+$/gi.test(body.name)) {
+    //检测名称
+    if (!/^[\u4E00-\u9FA5\w\d\?？!！，,.。-]+$/gi.test(body.name)) {
         err.push('标题只允许汉字、字母、数字、下划线和连字符')
     }
 
-    //只允许反斜杠、字母、数字、并且只能用php结尾
-    if (!/^[\/a-z0-9-_+]+[a-z0-9-_+]+\.php$/.test(body.url)) {
+    //检测URL
+    if (!/^[\/a-z0-9-_+]+[a-z0-9-_+]+(\.php)?$/.test(body.url)) {
         err.push('页面URL只允许字母、数字、下划线，以php结尾')
     }
 
+    //模板内容不能为空
     if (!body.content || body.content.length < 1) {
         err.push('模板不能为空')
     }
 
+    //检查末尾是否以php结尾
+    if (!/\.php$/i.test(body.url)) {
+        body.url += '.php'
+    }
 
     //查询页面路径是否已被使用
     //多余的斜杠缩减为1个
@@ -39,6 +47,12 @@ add.post('/page', function (req, res) {
     //并且防止超过6层的路径
     if (body.url.match(/[\/]/g).length > 6) {
         err.push('目录层级超过6层限制')
+    }
+
+
+    //url不能超过100个字符，为什么是100个？随便定的，100个够长了
+    if (body.url.length > 100) {
+        err.push('自定义url部分，长度不能超过100个字符')
     }
 
     if (err.length > 0) {
@@ -65,7 +79,7 @@ add.post('/page', function (req, res) {
             if (err) {
                 res.json({code: -4, err: ['入库失败']})
             } else {
-                res.json({code: 200})
+                res.json({code: 200, doc: docs[0]})
             }
         });
     })

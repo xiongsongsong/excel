@@ -7,28 +7,32 @@ block link
             background: #C93756;
         }
 block content
-    include /nav
-    #editor-wrapper
-        #editor
-            | &lt;!doctype html&gt;
-            | &lt;html&gt;
-            | &lt;head lang="zh"&gt;
-            | &lt;meta charset="UTF-8"&gt;
-            | &lt;title&gt;&lt;/title&gt;
-            | &lt;/head&gt;
-            | &lt;body&gt;
-            | &lt;/body&gt;
-            | &lt;/html&gt;
-        form#sidebar(name="editor",action="/add/page",method="post")
-            .group
-                h2 页面名称
-                input(type='text',name="name",placeholder="页面名称方便查找")
-            .group
-                h2 页面路径
-                input(type='text',name="url",placeholder="请输入线上地址").php
-                textarea(name="content").hide
-            .group.tr
-                button(type="submit") 下一步，编辑数据
+    form#sidebar(name="editor",action="/add/page",method="post")
+        textarea.hide(name="content")
+        #nav
+            label
+                | 页面名称：
+                input(type="text",name="name",placeholder="请输入页面名称")
+                span.name
+            label
+                | 线上地址：http://www.mogujie.com/go/
+                input(type="text",name="url",placeholder="请修改此路径")
+                span.url
+                | .php
+            label.control
+                button(type="button") todo:快速插入
+                button(type="submit") 保存
+        #editor-wrapper
+            #editor
+                | &lt;!doctype html&gt;
+                | &lt;html&gt;
+                | &lt;head lang="zh"&gt;
+                | &lt;meta charset="UTF-8"&gt;
+                | &lt;title&gt;&lt;/title&gt;
+                | &lt;/head&gt;
+                | &lt;body&gt;
+                | &lt;/body&gt;
+                | &lt;/html&gt;
 
 block js
     script(src='/seajs-2.3.0/sea.js')
