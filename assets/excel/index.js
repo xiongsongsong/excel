@@ -7,11 +7,8 @@ define(function (require, exports, module) {
         var maxRow = 10000
         var maxField = 26
 
-        //todo:blur、focus应该抽象出来
-        //todo：例如单元格中上传图片的功能。拖曳到对应单元格则完成图片上传
-
-
         function Excel(selector, cfg) {
+            var self = this
 
             var id = +(new Date()) + '' + Math.random().toString().substring(2, 8)
             this.styleNodeId = 'excel-style-' + id
@@ -41,7 +38,7 @@ define(function (require, exports, module) {
                 '</div>' +
                 '</div>' +
                 '<p id="info"></p>' +
-                '</div>').appendTo($(selector))
+                '</div>').appendTo($(selector).attr('data-table', cfg._id).data('table', self))
 
 
             this.nodeId = '#excel-' + id
@@ -71,7 +68,6 @@ define(function (require, exports, module) {
             this.colNode = $fields[0].getElementsByTagName('span')
             this.rowNode = $rows[0].getElementsByTagName('div')
 
-            var self = this
 
             //插入编辑节点
             self.$content.append($('<div class="select"><textarea></textarea></div>'))
@@ -101,8 +97,8 @@ define(function (require, exports, module) {
                 initScrollTop = self.$wrapper.scrollTop()
 
                 recordXY(ev)
-                $document.on('mousemove', recordXY)
-                $document.on('selectstart', preventDefaultSelectStart)
+                /*$document.on('mousemove', recordXY)
+                $document.on('selectstart', preventDefaultSelectStart)*/
                 $document.on('mouseup', off)
                 self.$wrapper.on('scroll', scrollOffset)
             }

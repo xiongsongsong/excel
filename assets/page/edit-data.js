@@ -56,7 +56,8 @@ define(function (require, exports, module) {
 
         var excel = new Excel('#data-' + index, {
             fields: fields,
-            rows: 10
+            rows: 10,
+            _id: ids[group]._id
         })
 
         excel.on('selectStart', function () {
@@ -65,7 +66,6 @@ define(function (require, exports, module) {
 
         excel.$input.on('blur', function () {
             blur.call(excel)
-            console.log(JSON.stringify(excel.getData(), 4, undefined))
         })
 
         excel.on('select', function () {
@@ -77,6 +77,25 @@ define(function (require, exports, module) {
         })
 
         excel.resetGridPosition()
+
+    })
+
+    //点击保存数据的时候
+    $('.save-btn').on('click', function () {
+        var data = {}
+        $('div[data-table]').each(function (i, $table) {
+            $table = $($table)
+            var _id = $table.attr('data-table')
+            data[_id] = $table.data('table').getData()
+        })
+
+        $.ajax({
+            url: '/page/save-data/' + $(this).attr('_id'),
+            type: 'POST',
+            data: data
+        }).done(function (data) {
+
+        })
 
     })
 
