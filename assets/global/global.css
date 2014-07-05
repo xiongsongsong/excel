@@ -1,0 +1,39 @@
+body,
+ul,
+p,
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  padding: 0;
+}
+body {
+  background: #000;
+}
+ul,
+li {
+  list-style-type: none;
+}
+.hide {
+  display: none;
+}
+#nav {
+  height: 42px;
+  background: #519a73;
+  font-size: 12px;
+  line-height: 42px;
+  padding-left: 1em;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 5px 5px rgba(0,0,0,0.2);
+}
+#nav a {
+  color: #fff;
+  display: inline-block;
+  padding: 0 1em;
+  text-decoration: none;
+}
+#nav:hover {
+  opacity: 1;
+}

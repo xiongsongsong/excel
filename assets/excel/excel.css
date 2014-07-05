@@ -1,0 +1,137 @@
+.excel-wrapper:focus,
+.excel-wrapper {
+  border: 1px #888 solid;
+  border-radius: 3px;
+  padding-left: 35px;
+  padding-top: 25px;
+  position: relative;
+  overflow: auto;
+  width: auto;
+  display: inline-block;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  font-size: 12px;
+  height: 100px;
+}
+.excel-wrapper:focus .excel-container,
+.excel-wrapper .excel-container {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.excel-wrapper:focus .excel-content,
+.excel-wrapper .excel-content {
+  width: 100%;
+  cursor: crosshair;
+}
+.excel-wrapper:focus .excel-content i,
+.excel-wrapper .excel-content i {
+  position: absolute;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-style: normal;
+  line-height: 200%;
+  font-family: simsun, sans-serif;
+  text-indent: 3px;
+}
+.excel-wrapper:focus .fields,
+.excel-wrapper .fields {
+  position: absolute;
+  left: 35px;
+  top: 0;
+  background: #fff;
+/* Old browsers */
+  background: -moz-linear-gradient(top, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #fff), color-stop(47%, #f6f6f6), color-stop(100%, #ededed));
+/* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* IE10+ */
+  background: linear-gradient(to bottom, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* W3C */
+  height: 25px;
+  white-space: nowrap;
+  z-index: 100;
+  -webkit-transition: box-shadow 0.2s ease-in-out;
+  cursor: default;
+}
+.excel-wrapper:focus .fields span,
+.excel-wrapper .fields span {
+  width: 100px;
+  display: inline-block;
+  height: 100%;
+  text-align: center;
+  line-height: 220%;
+  background: url("field.png") 0 0 repeat-y;
+}
+.excel-wrapper:focus .fields.overflow,
+.excel-wrapper .fields.overflow {
+  box-shadow: 12px 0 20px rgba(0,0,0,0.3);
+}
+.excel-wrapper:focus .rows,
+.excel-wrapper .rows {
+  background: #fff;
+/* Old browsers */
+  background: -moz-linear-gradient(left, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* FF3.6+ */
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, #fff), color-stop(47%, #f6f6f6), color-stop(100%, #ededed));
+/* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(left, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(left, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* Opera 11.10+ */
+  background: -ms-linear-gradient(left, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* IE10+ */
+  background: linear-gradient(to right, #fff 0%, #f6f6f6 47%, #ededed 100%);
+/* W3C */
+  width: 35px;
+  position: absolute;
+  left: 0;
+  top: 25px;
+  z-index: 101;
+  -webkit-transition: box-shadow 0.2s ease-in-out;
+  cursor: default;
+}
+.excel-wrapper:focus .rows div,
+.excel-wrapper .rows div {
+  box-orient: horizontal;
+  box-pack: center;
+  box-align: center;
+  height: 25px;
+  font-size: 12px;
+  display: -webkit-box;
+  -webkit-box-orient: horizontal;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
+  background: url("rows.png") 0 0 repeat-x;
+}
+.excel-wrapper:focus .rows.overflow,
+.excel-wrapper .rows.overflow {
+  box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+}
+div.select {
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  resize: none;
+  margin-left: 35px;
+  z-index: 99;
+  background: rgba(0,0,0,0.1);
+  left: -99999em;
+}
+div.select textarea {
+  border: none;
+  resize: none;
+  background: rgba(0,0,0,0.05);
+  outline: none;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  line-height: 200%;
+  font-family: simsun, sans-serif;
+}
