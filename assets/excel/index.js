@@ -38,7 +38,7 @@ define(function (require, exports, module) {
                 '</div>' +
                 '</div>' +
                 '<p id="info"></p>' +
-                '</div>').appendTo($(selector).attr('data-table', cfg._id).data('table', self))
+                '</div>').appendTo($(selector).attr('data-table', cfg.dataId).data('table', self))
 
 
             this.nodeId = '#excel-' + id
@@ -98,7 +98,7 @@ define(function (require, exports, module) {
 
                 recordXY(ev)
                 /*$document.on('mousemove', recordXY)
-                $document.on('selectstart', preventDefaultSelectStart)*/
+                 $document.on('selectstart', preventDefaultSelectStart)*/
                 $document.on('mouseup', off)
                 self.$wrapper.on('scroll', scrollOffset)
             }
@@ -408,11 +408,10 @@ define(function (require, exports, module) {
                 if (isNaN(x) || isNaN(y) || x < 0 || y < 0 || x > maxRow || y > maxField) {
                     continue;
                 }
-                //如果记录不存在
-                if (!data[y]) {
-                    //设置记录为一个新的空对象
-                    data[y] = JSON.parse(nullStr)
-                }
+
+                //如果记录不存在，则设置记录为一个新的空对象
+                if (!data[y]) data[y] = JSON.parse(nullStr)
+
                 data[y][field[x]] = node.innerText.trim()
             }
             //未有的记录，设置一行为空的数据

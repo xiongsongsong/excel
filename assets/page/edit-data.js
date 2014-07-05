@@ -57,7 +57,7 @@ define(function (require, exports, module) {
         var excel = new Excel('#data-' + index, {
             fields: fields,
             rows: 10,
-            _id: ids[group]._id
+            dataId: group
         })
 
         excel.on('selectStart', function () {
@@ -85,8 +85,8 @@ define(function (require, exports, module) {
         var data = {}
         $('div[data-table]').each(function (i, $table) {
             $table = $($table)
-            var _id = $table.attr('data-table')
-            data[_id] = $table.data('table').getData()
+            var dataId = $table.attr('data-table')
+            data[dataId] = $table.data('table').getData()
         })
 
         $.ajax({

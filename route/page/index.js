@@ -59,10 +59,10 @@ page.get(/^\/edit-data\/([a-z0-9]{24})[\/]?/, function (req, res) {
         var ids = Object.create(null)
         doc.content = doc.content.split(/[\r\n]/m).map(function (line) {
             if (tableRe.test(line)) {
-                ids[RegExp.$1] = {
+                ids[RegExp.$4] = {
+                    name: RegExp.$1,
                     group: RegExp.$2,
-                    fields: RegExp.$3,
-                    _id: RegExp.$4
+                    fields: RegExp.$3
                 }
                 return ''
             } else {
@@ -70,9 +70,11 @@ page.get(/^\/edit-data\/([a-z0-9]{24})[\/]?/, function (req, res) {
             }
         }).join('')
 
-        tpl.find({
-            '_id': { $in: Object.keys(ids)}
+        var data = db.collection('data')
+        data.find({
+            'dataId': { $in: Object.keys(ids)}
         }).toArray(function (err, docs) {
+            console.log(docs, Object.keys(ids))
             res.render('page/edit-data', {_id: req.params[0], ids: ids, docs: docs})
         })
     })
