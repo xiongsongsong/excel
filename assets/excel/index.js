@@ -21,7 +21,7 @@ define(function (require, exports, module) {
         var fieldsStr = ''
 
         cfg.fields.forEach(function (item) {
-            fieldsStr += '<span data->' + item + '</span>'
+            fieldsStr += '<span data-name="' + item[0] + '" data-type="' + item[2] + '">' + item[1] + '</span>'
         })
 
         var rowStr = ''
@@ -243,7 +243,7 @@ define(function (require, exports, module) {
         for (var i = 0; i < this.colNode.length; i++) {
             var left = this.colNode[i].offsetLeft
             var width = this.colNode[i].offsetWidth
-            cssText.push('url(field.png) ' + left + 'px 0 repeat-y')
+            cssText.push('url(/excel/field.png) ' + left + 'px 0 repeat-y')
             //字段x方位的坐标
             gridOffset.push(this.nodeId + ' [x="' + i + '"]{' +
                 'left:' + ( left + rowWidth) + 'px;' +
@@ -254,7 +254,7 @@ define(function (require, exports, module) {
         for (var j = 0; j < this.rowNode.length; j++) {
             var top = this.rowNode[j].offsetTop
             var height = this.rowNode[j].offsetHeight
-            cssText.push('url(rows.png) 0 ' + top + 'px repeat-x')
+            cssText.push('url(/excel/rows.png) 0 ' + top + 'px repeat-x')
             gridOffset.push(this.nodeId + ' [y="' + j + '"]{' +
                 'top:' + (top + fieldHeight) + 'px;' +
                 'height:' + height + 'px;' +

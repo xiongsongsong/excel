@@ -1,0 +1,19 @@
+doctype html
+html
+    head
+        title 编辑数据 #{_id}
+        script(src="/jquery/jquery-2.1.1.min.js")
+        script(src="/seajs-2.3.0/sea.js")
+        link(rel="stylesheet",href="/excel/excel.css")
+        link(rel="stylesheet",href="/page/edit-data.css")
+    body
+        #edit-wrapper
+            -Object.keys(ids).forEach(function(key,index){
+                .edit-wrapper
+                    h2 #{ids[key].group}
+                    div(id="data-#{index}")
+            -})
+
+        script.
+            var ids=!{JSON.stringify(ids)};
+            seajs.use('/page/edit-data');

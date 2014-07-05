@@ -10,7 +10,7 @@ define(function () {
         $.post(form.action, $form.serialize())
             .done(function (data) {
                 if (data.code === 200 && data.doc._id) {
-                    location.href = '/page/' + data.doc._id + '/edit/data'
+                    location.href = '/page/preview/' + data.doc._id
                 } else {
                     alert(JSON.stringify(data, undefined, 4))
                 }
