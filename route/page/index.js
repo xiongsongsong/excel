@@ -37,7 +37,6 @@ page.get(/^\/preview\/([a-z0-9]{24})[\/]?$/, function (req, res) {
         tpl.find({
             '_id': { $in: Object.keys(ids)}
         }).toArray(function (err, docs) {
-            console.log(err, docs)
             res.render('page/index', {_id: req.params[0]})
         })
     })
@@ -73,8 +72,8 @@ page.get(/^\/edit-data\/([a-z0-9]{24})[\/]?/, function (req, res) {
         var data = db.collection('data')
         data.find({
             'dataId': { $in: Object.keys(ids)}
-        }).toArray(function (err, docs) {
-            console.log(docs, Object.keys(ids))
+        }).sort({ts: -1}).limit(Object.keys(ids).length).toArray(function (err, docs) {
+            console.log(docs.length)
             res.render('page/edit-data', {_id: req.params[0], ids: ids, docs: docs})
         })
     })

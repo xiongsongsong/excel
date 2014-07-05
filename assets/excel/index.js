@@ -242,8 +242,8 @@ define(function (require, exports, module) {
                 var left = this.colNode[i].offsetLeft
                 var width = this.colNode[i].offsetWidth
                 cssText.push('url(/excel/field.png) ' + left + 'px 0 repeat-y')
-                //字段x方位的坐标
-                gridOffset.push(this.nodeId + ' [x="' + i + '"]{' +
+                //字段y方位的坐标
+                gridOffset.push(this.nodeId + ' [y="' + i + '"]{' +
                     'left:' + ( left + rowWidth) + 'px;' +
                     'width:' + width + 'px;' +
                     '}')
@@ -253,7 +253,7 @@ define(function (require, exports, module) {
                 var top = this.rowNode[j].offsetTop
                 var height = this.rowNode[j].offsetHeight
                 cssText.push('url(/excel/rows.png) 0 ' + top + 'px repeat-x')
-                gridOffset.push(this.nodeId + ' [y="' + j + '"]{' +
+                gridOffset.push(this.nodeId + ' [x="' + j + '"]{' +
                     'top:' + (top + fieldHeight) + 'px;' +
                     'height:' + height + 'px;' +
                     '}')
@@ -410,9 +410,9 @@ define(function (require, exports, module) {
                 }
 
                 //如果记录不存在，则设置记录为一个新的空对象
-                if (!data[y]) data[y] = JSON.parse(nullStr)
+                if (!data[x]) data[x] = JSON.parse(nullStr)
 
-                data[y][field[x]] = node.innerText.trim()
+                data[x][field[y]] = node.innerText.trim()
             }
             //未有的记录，设置一行为空的数据
             for (var k = 0; k < data.length; k++) {

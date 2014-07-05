@@ -17,15 +17,15 @@ define(function (require, exports, module) {
 
     function selectStart() {
         //获得第一个节点的坐标信息
-        var x = this.point.startCol
-        var y = this.point.startRow
+        var x = this.point.startRow
+        var y = this.point.startCol
         saveCellData.call(this, x, y)
     }
 
     function blur() {
         //获得第一个节点的坐标信息
-        var x = this.point.startCol
-        var y = this.point.startRow
+        var x = this.point.startRow
+        var y = this.point.startCol
         saveCellData.call(this, x, y)
     }
 
@@ -78,6 +78,25 @@ define(function (require, exports, module) {
 
         excel.resetGridPosition()
 
+    })
+
+    //回填数据
+    docs.forEach(function (doc) {
+        var $table = $('div[data-table=' + doc.dataId + ']')
+        var fieldMap = {}
+        var colNode = $table.data('table').colNode
+        var $content = $table.data('table').$content
+        for (var i = 0; i < colNode.length; i++) {
+            var obj = colNode[i];
+            fieldMap[obj.getAttribute('data-name')] = i
+        }
+
+        doc.data.forEach(function (result, x) {
+            Object.keys(result).forEach(function (fieldName) {
+                if (fieldMap[fieldName] === undefined) return;
+                $content.append($('<i x="' + x + '" y="' + fieldMap[fieldName] + '">' + result[fieldName] + '</i>'))
+            })
+        })
     })
 
     //点击保存数据的时候
