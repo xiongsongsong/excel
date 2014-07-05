@@ -65,6 +65,7 @@ define(function (require, exports, module) {
 
         excel.$input.on('blur', function () {
             blur.call(excel)
+            console.log(JSON.stringify(excel.getData(), 4, undefined))
         })
 
         excel.on('select', function () {
