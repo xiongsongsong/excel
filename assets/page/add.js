@@ -7,7 +7,7 @@ define(function () {
         $.post(form.action, $form.serialize())
             .done(function (data) {
                 if (data.code === 200 && data.doc._id) {
-                    location.href = '/page/preview/' + data.doc._id
+                    location.href = '/page/preview/' + data.doc.tplId
                 } else {
                     alert(JSON.stringify(data, undefined, 4))
                 }

@@ -51,9 +51,17 @@ page.post(/^\/save-data\/([a-z0-9]{24})[\/]?$/, saveData)
 //预览页面
 function preview(req, res) {
     var tpl = db.collection('tpl')
+
+    try {
+        var tplId = ObjectID(req.params[0])
+    } catch (e) {
+        res.end('error')
+        return
+    }
+
     //查询出代码
-    tpl.findOne({_id: ObjectID(req.params[0])}, function (err, doc) {
-        if (err || !doc) {
+    tpl.find({tplId: tplId}).sort({ts: -1}).limit(1).toArray(function (err, doc) {
+        if (err || !doc || doc.length < 1) {
             res.status(404)
             res.end('该页面不存在')
             return
@@ -61,6 +69,7 @@ function preview(req, res) {
 
         //将表格表达式清空，并记录在ids变量中， {变量：数据ID,,,}
         var ids = Object.create(null)
+        doc = doc[0]
         doc.content = doc.content.split(/\r\n/).filter(function (line) {
             if (tableRe.test(line)) {
                 ids[RegExp.$4] = {
@@ -77,7 +86,7 @@ function preview(req, res) {
         tpl.find({
             '_id': { $in: Object.keys(ids)}
         }).toArray(function (err, docs) {
-            res.render('page/index', {doc: doc, _id: req.params[0]})
+            res.render('page/index', {doc: doc, _id: tplId.toString()})
         })
     })
 }
@@ -255,6 +264,7 @@ function add(req, res) {
             data['tplId'] = _id
         }
 
+        //每次修改模板都是新增记录
         tpl.insert(data, function (err, docs) {
             if (err) {
                 res.json({code: -4, err: ['入库失败']})

@@ -10,7 +10,6 @@ require('db').connect(function () {
 
     // parse application/x-www-form-urlencoded
     app.use(bodyParser.urlencoded())
-
     // parse application/json
     app.use(bodyParser.json())
 

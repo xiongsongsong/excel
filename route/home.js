@@ -6,11 +6,24 @@ var ObjectID = require('mongodb').ObjectID
 var xss = require('xss')
 
 home.get('/', function (req, res) {
+    res.header('Cache-Control', 'no-cache')
     var tpl = db.collection('tpl')
-    //初建立的模板，tplId等于自身的_id
-    tpl.find({ $where: "this._id.toString() == this.tplId.toString()" }).toArray(function (err, docs) {
+    //查询所有最后修改后的文档，倒序排列
+    tpl.aggregate([
+        {
+            $sort: {ts: 1}
+        },
+        {
+            $group: {
+                _id: "$tplId",
+                last_url: {$last: "$ts"},
+                name: {$last: '$name'}
+            }
+        }
+    ], function (err, docs) {
         res.render('index', {docs: docs})
     })
+
 })
 
 module.exports = home

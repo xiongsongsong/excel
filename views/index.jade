@@ -22,7 +22,8 @@ block content
                     td= tpl.url
                     td= tpl.ts
                     td
-                        a(href="/page/edit-tpl/#{tpl.tplId}") 编辑
+                        a(href="/page/edit-tpl/#{tpl._id}") 设置页面
+                        a(href="/page/preview/#{tpl._id}") 编辑数据
             - })
 
 block js
