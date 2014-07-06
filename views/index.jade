@@ -13,14 +13,13 @@ block content
         table
             tr
                 th 页面名称
-                th 线上地址
                 th 模板修改时间
                 th 操作
             - docs.forEach(function(tpl){
                 tr
-                    td= tpl.name
-                    td= tpl.url
-                    td= tpl.ts
+                    td
+                        a(href="#{tpl.url}.php")=tpl.name
+                    td #{moment(tpl.ts).startOf('minutes').fromNow()}
                     td
                         a(href="/page/edit-tpl/#{tpl._id}") 设置页面
                         a(href="/page/preview/#{tpl._id}") 编辑数据
