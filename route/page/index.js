@@ -16,16 +16,23 @@ page.get(/^\/(add|edit-tpl(?:\/([a-z0-9]{24})))[\/]?$/, function (req, res) {
         res.render('page/add', {doc: false})
         return
     }
+    try {
+        var tplId = ObjectID(req.params[1])
+    } catch (e) {
+        res.end('参数错误')
+        return
+    }
 
     var tpl = db.collection('tpl')
     //查询出代码
-    tpl.findOne({_id: ObjectID(req.params[1])}, function (err, doc) {
-        if (err || !doc) {
+    tpl.find({tplId: tplId}).sort({ts: -1}).limit(1).toArray(function (err, doc) {
+
+        if (err || !doc || doc.length < 1) {
             res.status(404)
             res.end('该页面不存在')
             return
         }
-        res.render('page/add', {doc: doc})
+        res.render('page/add', {doc: doc[0]})
     })
 })
 
@@ -147,6 +154,8 @@ function saveData(req, res) {
 
 }
 
+
+//新建和编辑模板，使用同一个方法
 function add(req, res) {
 
     var body = req.body
@@ -161,35 +170,39 @@ function add(req, res) {
         err.push('标题只允许汉字、字母、数字、下划线和连字符')
     }
 
-    //检测URL
-    if (!/^[\/a-z0-9-_+]+$/.test(body.url)) {
-        err.push('页面URL只允许字母、数字、下划线')
-    }
+    //更新模板时，只需要检测模板内容和模板名称，下面的就不需要检测了
+    if (req.body.tplId === undefined) {
+        //检测URL
+        if (!/^[\/a-z0-9-_+]+$/.test(body.url)) {
+            err.push('页面URL只允许字母、数字、下划线')
+        }
 
-    //模板内容不能为空
-    if (!body.content || body.content.length < 1) {
-        err.push('模板不能为空')
-    }
+        //模板内容不能为空
+        if (!body.content || body.content.length < 1) {
+            err.push('模板不能为空')
+        }
 
-    //查询页面路径是否已被使用
-    //多余的斜杠缩减为1个
-    body.url = body.url.replace(/[\/]+/g, '/')
+        //查询页面路径是否已被使用
+        //多余的斜杠缩减为1个
+        body.url = body.url.replace(/[\/]+/g, '/')
 
-    //重要：去掉首斜杠
-    if (body.url.indexOf('/') === 0) {
-        body.url = body.url.substring(1)
-    }
+        //重要：去掉首斜杠
+        if (body.url.indexOf('/') === 0) {
+            body.url = body.url.substring(1)
+        }
 
-    //并且防止超过6层的路径
-    var slashNum = body.url.match(/[\/]/g)
-    if (slashNum && slashNum.length > 6) {
-        err.push('目录层级超过6层限制')
-    }
+        //并且防止超过6层的路径
+        var slashNum = body.url.match(/[\/]/g)
+        if (slashNum && slashNum.length > 6) {
+            err.push('目录层级超过6层限制')
+        }
 
 
-    //url不能超过100个字符，为什么是100个？随便定的，100个够长了
-    if (body.url.length > 100) {
-        err.push('自定义url部分，长度不能超过100个字符')
+        //url不能超过100个字符，为什么是100个？随便定的，100个够长了
+        if (body.url.length > 100) {
+            err.push('自定义url部分，长度不能超过100个字符')
+
+        }
     }
 
     if (err.length > 0) {
@@ -197,13 +210,18 @@ function add(req, res) {
         return
     }
 
+    //todo:权限控制尚未完成，目前可以随意篡改编辑历史
+
     var tpl = db.collection('tpl');
-    tpl.findOne({url: body.url}, function (err, item) {
+    tpl.findOne({url: body.url}, function (err, doc) {
         if (err) {
             res.json({code: -2, err: ['查询页面出错，请稍后再试']})
             return
         }
-        if (item) {
+
+        //如果不存在tplId，则说明是新建模板
+        //新建模板的url不能和已有的相同
+        if (!req.body.tplId && doc) {
             res.json({code: -3, err: ['页面已经存在，请换一个路径']})
             return
         }
@@ -219,13 +237,25 @@ function add(req, res) {
             }
         }).join('\r\n')
 
-
-        tpl.insert({
+        var _id = new ObjectID()
+        var data = {
+            _id: _id,
             name: body.name,
-            url: body.url,
+            //初建的模板，doc是查不出来的，因此从body.url中获取
+            //修改模板的时候，doc必然有值，因此从doc.url中获取
+            url: doc ? doc.url : body.url,
             content: body.content,
             ts: Date.now()
-        }, function (err, docs) {
+        }
+
+        //如果存在tplId，则为更新模板操作，否则认为是新建页面
+        if (body.tplId && /^[a-z0-9]{24}$/.test(body.tplId)) {
+            data['tplId'] = ObjectID(body.tplId)
+        } else {
+            data['tplId'] = _id
+        }
+
+        tpl.insert(data, function (err, docs) {
             if (err) {
                 res.json({code: -4, err: ['入库失败']})
             } else {

@@ -9,6 +9,9 @@ block content
     form#sidebar(name="editor",action="/page/add",method="post")
         textarea.hide(name="content")
         -if(doc)
+            //一个模板在更新过程中，会有多个版本
+            //版本之间的时间顺序使用tplId来关联
+            //新建页面的tplId指向自己的_id，在后逻辑中，初次的_id通过new ObjectId生成
             input(type="hidden",name="tplId",value="#{ doc.tplId ? doc.tplId : doc._id }")
         #nav
             label
@@ -21,8 +24,8 @@ block content
                 span.url
                 | .php
             label.control
-                button(type="button") todo:快速插入
-                button(type="submit") 保存
+                //button(type="button") todo:快速插入
+                button(type="submit") #{doc ? '更新模板' : '保存'}
         #editor-wrapper
             #editor
                 - if (!doc) {
