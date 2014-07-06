@@ -1,0 +1,51 @@
+extends /layout
+block link
+    link(rel="stylesheet",href="/page/add.css")
+    style(type="text/css").
+        #add-page {
+            background: #C93756;
+        }
+block content
+    form#sidebar(name="editor",action="/page/add",method="post")
+        textarea.hide(name="content")
+        -if(doc)
+            input(type="hidden",name="tplId",value="#{ doc.tplId ? doc.tplId : doc._id }")
+        #nav
+            label
+                | 页面名称：
+                input(type="text",name="name",placeholder="请输入页面名称",value="#{doc?doc.name:''}")
+                span.name
+            label
+                | 线上地址：http://www.mogujie.com/go/
+                input(type="text",name="url",placeholder="请修改此路径",value="#{doc?doc.url:''}")
+                span.url
+                | .php
+            label.control
+                button(type="button") todo:快速插入
+                button(type="submit") 保存
+        #editor-wrapper
+            #editor
+                - if (!doc) {
+                    | &lt;!doctype html&gt;
+                    | &lt;html&gt;
+                    | &lt;head lang="zh"&gt;
+                    | &lt;meta charset="UTF-8"&gt;
+                    | &lt;title&gt;&lt;/title&gt;
+                    | &lt;/head&gt;
+                    | &lt;body&gt;
+                    | &lt;/body&gt;
+                    | &lt;/html&gt;
+                - } else {
+                    | #{doc.content}
+                - }
+
+block js
+    script(src='/seajs-2.3.0/sea.js')
+    //引入高亮编辑器
+    script(src='/ace-builds/src-noconflict/ace.js')
+    script.
+        ace.require("ace/ext/language_tools");
+        var content = ace.edit("editor")
+        content.setTheme("ace/theme/monokai")
+        content.getSession().setMode("ace/mode/html")
+        seajs.use('/page/add')

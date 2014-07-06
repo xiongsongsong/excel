@@ -1,11 +1,29 @@
 extends layout
 
 block link
-    link(rel="stylesheet",href="/global/global.css")
-    link(rel="stylesheet",href="/home/index.css")
+    link(rel="stylesheet",href="/home/home.css")
 
 block content
-    include /sidebar
+    include /nav
+    #sidebar
+        ul
+            li
+                a#my-page 我的页面
+    #content
+        table
+            tr
+                th 页面名称
+                th 线上地址
+                th 模板修改时间
+                th 操作
+            - docs.forEach(function(tpl){
+                tr
+                    td= tpl.name
+                    td= tpl.url
+                    td= tpl.ts
+                    td
+                        a(href="/page/edit-tpl/#{tpl._id}") 编辑
+            - })
 
 block js
     script(src='/seajs-2.3.0/sea.js')

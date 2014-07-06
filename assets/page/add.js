@@ -1,6 +1,3 @@
-/**
- * Created by song on 14-7-4.
- */
 define(function () {
     var form = document.forms['editor']
     var $form = $(form)
@@ -18,8 +15,8 @@ define(function () {
     })
 
     //input自适应宽度
-    $form.on('input', 'input[name=name],input[name=url]', function () {
+    $form.find('input', 'input[name=name],input[name=url]').on('input', function () {
         $(this).css('width', $form.find('span.' + this.name).text(this.value).width())
         $(this).toggleClass('empty', this.value.trim().length < 1)
-    })
+    }).trigger('input')
 })
