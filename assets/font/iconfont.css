@@ -14,6 +14,11 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-tianjia:before {
-    content: "\f02b4";
-}
+
+.icon-tianjia:before { content: "\f02b4"; }
+
+.icon-jia:before { content: "\f0154"; }
+
+.icon-jia1:before { content: "\f0175"; }
+
+.icon-xifen:before { content: "\f00fd"; }
