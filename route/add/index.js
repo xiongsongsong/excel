@@ -1,10 +1,11 @@
 var express = require('express')
 var add = express.Router()
 var db = require('db').db
+var template = require('template')
 var ObjectID = require('mongodb').ObjectID
 
 //检测是否table表达式
-var tableRe = /^[\s]*-[\s]*([a-z]+[a-z0-9]*)[\s]*[=＝][\s]*([^\s]+?[=＝][^\s]+?)[,，](.+?)[,，]_id=([a-z0-9]{24})$/
+var tableRe = template.tableRe
 
 add.get('/page', function (req, res) {
     res.render('add/page')
@@ -76,10 +77,11 @@ add.post('/page', function (req, res) {
         }
 
         //检索并处理为table表达式的行
-        body.content = body.content.split(/\r\n/).map(function (line) {
+        body.content = body.content.split(/\r\n/gm).map(function (line) {
             //在保存前，生成一个ID放置在模板引擎的末尾
             //此处的ID，在data集合中的key为pageId
-            if (tableRe.test(line) && !/_id=[a-z0-9]{24}$/.test(line)) {
+            console.log(tableRe.test(line), line)
+            if (tableRe.test(line) && !/_id=[a-z0-9]{24}/.test(line)) {
                 return line + ',_id=' + new ObjectID()
             } else {
                 return line

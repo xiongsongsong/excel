@@ -5,9 +5,8 @@ var template = require('template')
 var ObjectID = require('mongodb').ObjectID
 var xss = require('xss')
 
-
 //针对表格表达式，获取出变量名，group=title，_id等三个参数
-var tableRe = /^[\s]*-[\s]*([a-z]+[a-z0-9]*)[\s]*[=＝][\s]*([^\s]+?[=＝][^\s]+?)[,，](.+?)[,，]_id=([a-z0-9]{24})$/
+var tableRe = template.tableRe
 
 page.get(/^\/preview\/([a-z0-9]{24})[\/]?$/, function (req, res) {
 
