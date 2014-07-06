@@ -83,14 +83,38 @@ function preview(req, res) {
             }
         }).join('\r\n')
 
-        tpl.find({
-            '_id': { $in: Object.keys(ids)}
-        }).toArray(function (err, docs) {
-            res.render('page/index', {doc: doc, _id: tplId.toString()})
-        })
+        var data = db.collection('data')
+
+        data.aggregate(
+            {$sort: {ts: -1}},
+            {
+                $group: {
+                    _id: "$dataId",
+                    data: {$first: '$data'}
+                }
+            }, function (err, docs) {
+
+                var objectIdList = docs.map(function (tb) {
+                    return 'var _' + tb._id + ' = ' + JSON.stringify(tb.data)
+                }).join('\r\n')
+
+                //将本地变量指向objectID
+                var dataStr = Object.keys(ids).map(function (tb) {
+                    var _var = '_' + tb
+                    //防止无数据时的报错
+                    return 'var ' + ids[tb].name + ' = typeof ' + _var + '!=="undefined" ? ' + _var + ':[];'
+                }).join('\r\n')
+
+                try {
+                    res.render('page/index', {
+                        content: eval(objectIdList + '\r\n' + dataStr + '\r\n' + template.render(doc.content)), data: docs, _id: tplId.toString()
+                    })
+                } catch (e) {
+                    res.end(e.toString())
+                }
+            })
     })
 }
-
 
 function editData(req, res) {
 
@@ -98,7 +122,9 @@ function editData(req, res) {
     var tpl = db.collection('tpl')
 
     //查询出模板源码
-    tpl.findOne({_id: ObjectID(req.params[0])}, function (err, doc) {
+    tpl.findOne({tplId: ObjectID(req.params[0])}, {sort: [
+        ['ts', -1]
+    ]}, function (err, doc) {
         if (err || !doc) {
             res.status(404)
             res.end('该页面不存在')
@@ -119,11 +145,13 @@ function editData(req, res) {
             }
         }).join('\r\n')
 
+
         var data = db.collection('data')
         data.find({
             'dataId': { $in: Object.keys(ids)}
         }).sort({ts: -1}).limit(Object.keys(ids).length).toArray(function (err, docs) {
-            console.log(docs.length)
+
+
             res.render('page/edit-data', {_id: req.params[0], ids: ids, docs: docs})
         })
     })
@@ -154,7 +182,6 @@ function saveData(req, res) {
             return
         }
         data.insert(cur, function (err, result) {
-            console.log(err, result)
             save()
         })
     }
