@@ -100,6 +100,7 @@ define(function (require, exports, module) {
     })
 
     //点击保存数据的时候
+    //todo:只应该对修改过的数据进行保存，而不是每次都全部保存一份
     $('.save-btn').on('click', function () {
         var data = {}
         $('div[data-table]').each(function (i, $table) {
@@ -108,12 +109,13 @@ define(function (require, exports, module) {
             data[dataId] = $table.data('table').getData()
         })
 
+        var $this = $(this)
         $.ajax({
-            url: '/page/save-data/' + $(this).attr('_id'),
+            url: '/page/save-data/' + $this.attr('_id'),
             type: 'POST',
             data: data
         }).done(function (data) {
-
+            location.href = '/page/preview/' + $this.attr('_id')
         })
 
     })
