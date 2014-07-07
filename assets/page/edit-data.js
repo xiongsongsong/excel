@@ -31,8 +31,8 @@ define(function (require, exports, module) {
 
     function select() {
         //获得第一个节点的坐标信息
-        var x = this.point.startCol
-        var y = this.point.startRow
+        var x = this.point.startRow
+        var y = this.point.startCol
         //读取那个节点的数据
         var $node = this.$content.find('i[x=' + x + '][y=' + y + ']')
         if ($node.length > 0) {
@@ -48,8 +48,15 @@ define(function (require, exports, module) {
     Object.keys(ids).forEach(function (group, index) {
 
         //数组含义为：id,描述,类型
-        var fields = ids[group].fields.replace(/[＝]+/g, '=').replace(/[，]/g, ',').split(',').map(function (field) {
-            return field.split('=').length == 3 ? field.split('=') : undefined;
+        var fields = ids[group].fields.replace(/[：:]+/g, ':').replace(/[，]/g, ',').split(',').map(function (field) {
+            var f = field.split(':')
+            //如果没有填写第三个参数，则默认认为是string类型的
+            if (f.length === 3) {
+                return f
+            } else if (f.length === 2) {
+                f.push('string')
+                return f
+            }
         }).filter(function (field) {
             return field
         })
@@ -74,6 +81,7 @@ define(function (require, exports, module) {
 
         excel.$input.on('mousedown', function (ev) {
             ev.stopPropagation()
+
         })
 
         excel.resetGridPosition()

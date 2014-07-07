@@ -20,7 +20,7 @@ define(function (require, exports, module) {
             var fieldsStr = ''
 
             cfg.fields.forEach(function (item) {
-                fieldsStr += '<span data-name="' + item[0] + '" data-type="' + item[2] + '">' + item[1] + '</span>'
+                fieldsStr += '<span data-name="' + item[0] + '" data-type="' + (item[2]) + '">' + item[1] + '</span>'
             })
 
             var rowStr = ''
@@ -82,7 +82,7 @@ define(function (require, exports, module) {
             self.$content.on('mousedown', bind)
 
             function bind(ev) {
-                self.trigger('selectStart', self.point)
+                self.trigger('selectStart')
 
                 var offset = self.$content.offset()
 
