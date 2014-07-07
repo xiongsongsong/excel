@@ -26,7 +26,6 @@ page.get(/^\/(add|edit-tpl(?:\/([a-z0-9]{24})))[\/]?$/, function (req, res) {
     var tpl = db.collection('tpl')
     //查询出代码
     tpl.find({tplId: tplId}).sort({ts: -1}).limit(1).toArray(function (err, doc) {
-
         if (err || !doc || doc.length < 1) {
             res.status(404)
             res.end('该页面不存在')
@@ -144,7 +143,6 @@ function editData(req, res) {
                 return true
             }
         }).join('\r\n')
-
 
         var data = db.collection('data')
         data.find({
