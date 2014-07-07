@@ -20,7 +20,7 @@ define(function (require, exports, module) {
             var fieldsStr = ''
 
             cfg.fields.forEach(function (item) {
-                fieldsStr += '<span data-name="' + item[0] + '" data-type="' + (item[2]) + '">' + item[1] + '</span>'
+                fieldsStr += '<span data-name="' + item[0].trim() + '" data-type="' + (item[2].trim()) + '">' + item[1].trim() + '</span>'
             })
 
             var rowStr = ''
