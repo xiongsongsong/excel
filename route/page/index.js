@@ -199,13 +199,20 @@ function add(req, res) {
 
     var err = []
 
+    try {
+        var tplId = ObjectID(body.tplId)
+    } catch (e) {
+        res.end('error')
+        return
+    }
+
     //检测名称
     if (!/^[\u4E00-\u9FA5\w\d\?？!！，,.。-]+$/gi.test(body.name)) {
         err.push('标题只允许汉字、字母、数字、下划线和连字符')
     }
 
     //更新模板时，只需要检测模板内容和模板名称，下面的就不需要检测了
-    if (req.body.tplId === undefined) {
+    if (body.tplId === undefined) {
         //检测URL
         if (!/^[\/a-z0-9-_+]+$/.test(body.url)) {
             err.push('页面URL只允许字母、数字、下划线')
@@ -247,14 +254,18 @@ function add(req, res) {
     //todo:权限控制尚未完成，目前可以随意篡改编辑历史
 
     var tpl = db.collection('tpl');
-    tpl.findOne({url: body.url}, function (err, doc) {
+    tpl.findOne({tplId: tplId}, {sort: [
+        ['ts', -1]
+    ]}, function (err, doc) {
+
         if (err) {
             res.json({code: -2, err: ['查询页面出错，请稍后再试']})
             return
         }
 
         //如果不存在tplId，则说明是新建模板
-        //新建模板的url不能和已有的相同
+        //并进一步检查是否已经有该记录了，有则说明url重复，则拒绝添加
+        //一个tplID对应一个url
         if (!req.body.tplId && doc) {
             res.json({code: -3, err: ['页面已经存在，请换一个路径']})
             return
