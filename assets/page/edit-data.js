@@ -80,7 +80,9 @@ define(function (require, exports, module) {
         })
 
         excel.$input.on('mousedown', function (ev) {
-            ev.stopPropagation()
+            if (excel.$input.val().trim().length > 0) {
+                ev.stopPropagation()
+            }
 
         })
 
