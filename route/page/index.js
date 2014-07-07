@@ -104,7 +104,9 @@ function preview(req, res) {
                 var dataStr = Object.keys(ids).map(function (tb) {
                     var _var = '_' + tb
                     //防止无数据时的报错
-                    return 'var ' + ids[tb].name + ' = typeof ' + _var + '!=="undefined" ? ' + _var + ':[];'
+                    return 'var ' + ids[tb].name + ' = typeof ' + _var + '!=="undefined" ? ' + _var + ':[];\r\n' +
+                        //如果记录只有一条，那么直接将变量指向数组的0，这样就不必写forEach了
+                        ids[tb].name + ' = ' + _var + '.length===1 ? ' + _var + '[0] : ' + _var
                 }).join('\r\n')
 
                 try {
