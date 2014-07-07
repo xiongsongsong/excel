@@ -71,6 +71,9 @@ function preview(req, res) {
         doc = doc[0]
         doc.content = doc.content.split(/\r\n/).filter(function (line) {
             if (tableRe.test(line)) {
+                //$1：代表变量名
+                //$2：group和title，group指组，title指组下某个“表”
+                //$3：代表字段的定义
                 ids[RegExp.$4] = {
                     name: RegExp.$1,
                     group: RegExp.$2,
@@ -132,7 +135,12 @@ function editData(req, res) {
         //将表格表达式清空，并记录在ids变量中， {变量：数据ID,,,}
         var ids = Object.create(null)
         doc.content = doc.content.split(/\r\n/).filter(function (line) {
+            //$1：代表变量名
+            //$2：group和title，group指组，title指组下某个“表”
+            //$3：代表字段的定义
+            //
             if (tableRe.test(line)) {
+                console.log(RegExp.$1, RegExp.$2, RegExp.$3, RegExp.$4)
                 ids[RegExp.$4] = {
                     name: RegExp.$1,
                     group: RegExp.$2,
@@ -148,8 +156,6 @@ function editData(req, res) {
         data.find({
             'dataId': { $in: Object.keys(ids)}
         }).sort({ts: -1}).limit(Object.keys(ids).length).toArray(function (err, docs) {
-
-
             res.render('page/edit-data', {_id: req.params[0], ids: ids, docs: docs})
         })
     })
