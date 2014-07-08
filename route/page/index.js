@@ -3,7 +3,6 @@ var page = express.Router()
 var db = require('db').db
 var template = require('template')
 var ObjectID = require('mongodb').ObjectID
-var xss = require('xss')
 
 //针对表格表达式，获取出变量名，group=title，_id等三个参数
 var tableRe = template.tableRe
