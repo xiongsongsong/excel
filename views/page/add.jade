@@ -1,3 +1,6 @@
+block var
+    -var title="创建新页面"
+
 extends /layout
 block link
     link(rel="stylesheet",href="/page/add.css")
@@ -22,8 +25,8 @@ block content
                 | 线上地址：http://www.mogujie.com/go/
                 input(type="text",name="url",placeholder="请修改此路径",value="#{doc?doc.url:''}",disabled = doc !== false)
                 span.url
-                | .php
-            label.control
+                    | .php
+                label.control
                 a.btn(href="/") 回首页
                 //button(type="button") todo:快速插入
                 button.btn(type="submit") #{doc ? '更新并预览' : '保存'}
