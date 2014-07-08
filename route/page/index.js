@@ -88,6 +88,9 @@ function preview(req, res) {
         var data = db.collection('data')
 
         data.aggregate(
+            {$match: {
+                dataId: {$in: Object.keys(ids)}
+            }},
             {$sort: {ts: -1}},
             {
                 $group: {
@@ -96,9 +99,15 @@ function preview(req, res) {
                 }
             }, function (err, docs) {
 
+                if (err) {
+                    res.end('查询数据表出错' + err)
+                    return
+                }
+
                 var objectIdList = docs.map(function (tb) {
                     return 'var _' + tb._id + ' = ' + JSON.stringify(tb.data)
                 }).join('\r\n')
+
 
                 //将本地变量指向objectID
                 var dataStr = Object.keys(ids).map(function (tb) {
@@ -106,15 +115,18 @@ function preview(req, res) {
                     //防止无数据时的报错
                     return 'var ' + ids[tb].name + ' = typeof ' + _var + '!=="undefined" ? ' + _var + ':[];\r\n' +
                         //如果记录只有一条，那么直接将变量指向数组的0，这样就不必写forEach了
-                        ids[tb].name + ' = ' + _var + '.length===1 ? ' + _var + '[0] : ' + _var
+                        ids[tb].name + ' = ' + ids[tb].name + '.length===1 ? ' + ids[tb].name + '[0] : ' + ids[tb].name
                 }).join('\r\n')
 
+                //需要调试时，打印 evalStr 进行检查
+                var evalStr = objectIdList + '\r\n' + dataStr + '\r\n' + template.render(doc.content)
                 try {
+                    console.log(evalStr)
                     res.render('page/index', {
-                        content: eval(objectIdList + '\r\n' + dataStr + '\r\n' + template.render(doc.content)), data: docs, _id: tplId.toString()
+                        content: eval(evalStr), data: docs, _id: tplId.toString()
                     })
                 } catch (e) {
-                    res.end(e.toString())
+                    res.end('模板解析出错，原因：\r\n' + e.toString() + '\r\n-----------------\r\n' + evalStr)
                 }
             })
     })
@@ -320,3 +332,6 @@ function add(req, res) {
 }
 
 module.exports = page
+
+
+
