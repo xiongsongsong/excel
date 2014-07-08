@@ -154,7 +154,6 @@ function editData(req, res) {
             //$3：代表字段的定义
             //
             if (tableRe.test(line)) {
-                console.log(RegExp.$1, RegExp.$2, RegExp.$3, RegExp.$4)
                 ids[RegExp.$4] = {
                     name: RegExp.$1,
                     group: RegExp.$2,

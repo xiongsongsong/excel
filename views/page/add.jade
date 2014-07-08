@@ -27,9 +27,9 @@ block content
                 span.url
                     | .php
                 label.control
-                a.btn(href="/") 回首页
-                //button(type="button") todo:快速插入
-                button.btn(type="submit") #{doc ? '更新并预览' : '保存'}
+                    a.btn(href="/") 回首页
+                    //button(type="button") todo:快速插入
+                    button.btn(type="submit") #{doc ? '更新并预览' : '保存'}
         #editor-wrapper
             #editor
                 - if (!doc) {
